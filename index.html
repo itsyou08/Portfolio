@@ -1,0 +1,903 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Ken Joshua Cabaton — Data Processing Associate</title>
+<meta name="description" content="Portfolio of Ken Joshua I. Cabaton — Data Processing Associate specializing in MDM, SQL, and data validation systems.">
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700;800&family=JetBrains+Mono:wght@400;500;600&display=swap" rel="stylesheet">
+<style>
+  :root{
+    --background: 0 0% 100%;
+    --foreground: 240 10% 3.9%;
+    --card: 0 0% 100%;
+    --card-foreground: 240 10% 3.9%;
+    --border: 240 5.9% 90%;
+    --input: 240 5.9% 90%;
+    --muted: 240 4.8% 95.9%;
+    --muted-foreground: 240 3.8% 46.1%;
+    --primary: 243 75% 59%;
+    --primary-foreground: 0 0% 100%;
+    --accent: 240 4.8% 95.9%;
+    --accent-foreground: 240 5.9% 10%;
+    --ring: 243 75% 59%;
+    --radius: 0.625rem;
+    --success: 158 64% 40%;
+    color-scheme: light;
+  }
+  html.dark{
+    --background: 240 10% 4.5%;
+    --foreground: 0 0% 96%;
+    --card: 240 8% 7%;
+    --card-foreground: 0 0% 96%;
+    --border: 240 5% 15%;
+    --input: 240 5% 15%;
+    --muted: 240 5% 11%;
+    --muted-foreground: 240 5% 62%;
+    --primary: 243 82% 68%;
+    --primary-foreground: 240 10% 4%;
+    --accent: 240 5% 12%;
+    --accent-foreground: 0 0% 96%;
+    --ring: 243 82% 68%;
+    --success: 158 64% 48%;
+    color-scheme: dark;
+  }
+
+  *{margin:0;padding:0;box-sizing:border-box;}
+  html{scroll-behavior:smooth;}
+  body{
+    background:hsl(var(--background));
+    color:hsl(var(--foreground));
+    font-family:'Inter',ui-sans-serif,system-ui,-apple-system,sans-serif;
+    font-size:15px;
+    line-height:1.6;
+    transition:background .25s ease, color .25s ease;
+    -webkit-font-smoothing:antialiased;
+  }
+  .mono{font-family:'JetBrains Mono', ui-monospace, monospace;}
+  a{color:inherit;text-decoration:none;}
+  img{max-width:100%;display:block;}
+  ::selection{background:hsl(var(--primary) / .25);}
+  :focus-visible{outline:2px solid hsl(var(--ring));outline-offset:2px;border-radius:4px;}
+
+  .wrap{max-width:1160px;margin:0 auto;padding:0 32px;}
+
+  /* ---------- Header ---------- */
+  header{
+    position:sticky;top:0;z-index:50;
+    background:hsl(var(--background) / .78);
+    backdrop-filter:blur(10px);
+    border-bottom:1px solid hsl(var(--border));
+  }
+  .nav{display:flex;align-items:center;justify-content:space-between;height:64px;}
+  .brand{display:flex;align-items:center;gap:10px;font-weight:700;font-size:14.5px;letter-spacing:-.01em;}
+  .brand-logo{width:56px;height:56px;border-radius:9px;position:relative;flex-shrink:0;overflow:hidden;}
+  .brand-logo img{width:100%;height:100%;object-fit:cover;border-radius:9px;display:block;}
+  .brand-fallback{
+    position:absolute;inset:0;display:none;align-items:center;justify-content:center;border-radius:9px;
+    background:linear-gradient(135deg, hsl(var(--primary)), hsl(275 70% 58%));
+    color:#fff;font-family:'JetBrains Mono',monospace;font-weight:700;font-size:13px;
+  }
+  .navlinks{display:flex;align-items:center;gap:2px;}
+  .navlinks a{
+    padding:7px 12px;border-radius:calc(var(--radius) - 4px);
+    font-size:13.5px;color:hsl(var(--muted-foreground));font-weight:500;
+    transition:.15s;
+  }
+  .navlinks a:hover{color:hsl(var(--foreground));background:hsl(var(--accent));}
+  .navlinks a.active{color:hsl(var(--foreground));background:hsl(var(--accent));}
+  .nav-right{display:flex;align-items:center;gap:8px;}
+
+  .btn{
+    display:inline-flex;align-items:center;justify-content:center;gap:6px;
+    height:36px;padding:0 15px;border-radius:calc(var(--radius) - 2px);
+    font-size:13.5px;font-weight:500;cursor:pointer;border:1px solid transparent;
+    transition:.15s ease;white-space:nowrap;
+  }
+  .btn-primary{background:hsl(var(--primary));color:hsl(var(--primary-foreground));}
+  .btn-primary:hover{opacity:.9;}
+  .btn-outline{border-color:hsl(var(--border));background:hsl(var(--background));color:hsl(var(--foreground));}
+  .btn-outline:hover{background:hsl(var(--accent));}
+  .btn-ghost{background:transparent;color:hsl(var(--foreground));}
+  .btn-ghost:hover{background:hsl(var(--accent));}
+  .btn-icon{width:36px;height:36px;padding:0;}
+
+  .menu-toggle{display:none;}
+
+  /* ---------- Badge ---------- */
+  .badge{
+    display:inline-flex;align-items:center;gap:5px;
+    padding:3px 9px;border-radius:999px;
+    font-size:11.5px;font-weight:500;
+    border:1px solid hsl(var(--border));
+    background:hsl(var(--accent));color:hsl(var(--accent-foreground));
+  }
+  .badge-mono{font-family:'JetBrains Mono',monospace;font-size:11px;}
+  .badge-outline{background:transparent;}
+  .badge-primary{background:hsl(var(--primary) / .12);color:hsl(var(--primary));border-color:hsl(var(--primary) / .25);}
+
+  /* ---------- Card ---------- */
+  .card{
+    background:hsl(var(--card));
+    border:1px solid hsl(var(--border));
+    border-radius:var(--radius);
+    padding:22px;
+  }
+  .card-hover{transition:.2s ease;}
+  .card-hover:hover{border-color:hsl(var(--primary) / .4);transform:translateY(-2px);box-shadow:0 8px 24px -12px hsl(var(--foreground) / .12);}
+
+  section{padding:88px 0;border-bottom:1px solid hsl(var(--border));}
+  section:last-of-type{border-bottom:none;}
+  .eyebrow{
+    font-family:'JetBrains Mono',monospace;font-size:12px;color:hsl(var(--primary));
+    display:flex;align-items:center;gap:8px;margin-bottom:14px;font-weight:500;
+  }
+  .eyebrow::before{content:'';width:16px;height:1px;background:hsl(var(--primary));}
+  h2.section-title{font-size:26px;font-weight:700;letter-spacing:-.02em;margin-bottom:8px;}
+  .section-sub{color:hsl(var(--muted-foreground));font-size:14.5px;max-width:56ch;margin-bottom:44px;}
+
+  /* ---------- Hero ---------- */
+  #hero{padding-top:64px;padding-bottom:80px;}
+  .hero-grid{display:grid;grid-template-columns:1.05fr .95fr;gap:48px;align-items:start;padding-top:36px;}
+  .hero-eyebrow{
+    font-family:'JetBrains Mono',monospace;font-size:12.5px;color:hsl(var(--muted-foreground));
+    display:flex;align-items:center;gap:8px;margin-bottom:20px;
+  }
+  .status-dot{width:7px;height:7px;border-radius:50%;background:hsl(var(--success));box-shadow:0 0 0 3px hsl(var(--success) / .18);}
+  h1{font-size:44px;line-height:1.08;font-weight:800;letter-spacing:-.03em;margin-bottom:18px;}
+  h1 span{color:hsl(var(--primary));}
+  .hero-desc{font-size:16px;color:hsl(var(--muted-foreground));max-width:52ch;margin-bottom:30px;}
+  .hero-cta{display:flex;gap:10px;margin-bottom:36px;flex-wrap:wrap;}
+  .hero-meta{display:flex;flex-wrap:wrap;gap:8px;}
+
+  /* ---------- Console ---------- */
+  .console{
+    background:hsl(var(--card));
+    border:1px solid hsl(var(--border));
+    border-radius:var(--radius);
+    overflow:hidden;
+    box-shadow:0 20px 50px -20px hsl(var(--foreground)/.15);
+  }
+  .console-bar{
+    display:flex;align-items:center;gap:6px;padding:10px 14px;
+    border-bottom:1px solid hsl(var(--border));background:hsl(var(--muted));
+  }
+  .console-bar .dot{width:11px;height:11px;border-radius:50%;display:inline-block;transform:none;box-shadow:inset 0 0 0 1px rgb(0 0 0 / .12);}
+  .console-bar .dot:nth-of-type(1){background:#ff5f57;}
+  .console-bar .dot:nth-of-type(2){background:#febc2e;}
+  .console-bar .dot:nth-of-type(3){background:#28c840;}
+  .console-title{margin-left:6px;font-family:'JetBrains Mono',monospace;font-size:11.5px;color:hsl(var(--muted-foreground));}
+  .console-copy{
+    margin-left:auto;display:flex;align-items:center;gap:5px;background:transparent;border:none;cursor:pointer;
+    color:hsl(var(--muted-foreground));font-family:'JetBrains Mono',monospace;font-size:10.5px;padding:4px 7px;border-radius:5px;transition:.15s;
+  }
+  .console-copy:hover{background:hsl(var(--border) / .5);color:hsl(var(--foreground));}
+  .console-code{display:flex;}
+  .console-lines{
+    padding:18px 0 18px 16px;font-family:'JetBrains Mono',monospace;font-size:12.6px;line-height:1.9;
+    color:hsl(var(--muted-foreground) / .45);user-select:none;text-align:right;min-width:20px;
+  }
+  .console-body{padding:18px 18px 18px 12px;font-family:'JetBrains Mono',monospace;font-size:12.6px;line-height:1.9;flex:1;min-width:0;}
+  .console-body .c-kw{color:hsl(280 65% 60%);}
+  .console-body .c-str{color:hsl(var(--success));}
+  .console-body .c-com{color:hsl(var(--muted-foreground));}
+  .console-body .c-fn{color:hsl(243 75% 62%);}
+  .caret{display:inline-block;width:6px;height:13px;background:hsl(var(--primary));vertical-align:middle;animation:blink 1s step-end infinite;}
+  @keyframes blink{50%{opacity:0;}}
+
+  .result-wrap{max-height:0;opacity:0;overflow:hidden;transition:max-height .5s ease, opacity .4s ease;}
+  .result-wrap.show{max-height:260px;opacity:1;}
+  .result-table{width:100%;border-collapse:collapse;font-family:'JetBrains Mono',monospace;font-size:11.8px;border-top:1px solid hsl(var(--border));}
+  .result-table td{padding:8px 18px;border-bottom:1px solid hsl(var(--border) / .6);}
+  .result-table tr:last-child td{border-bottom:none;}
+  .result-table td:first-child{color:hsl(var(--muted-foreground));width:96px;white-space:nowrap;}
+  .result-table td:last-child{color:hsl(var(--foreground));}
+  .result-table tr:hover{background:hsl(var(--muted) / .5);}
+  .console-footer{
+    display:flex;align-items:center;justify-content:space-between;gap:10px;
+    padding:9px 16px;border-top:1px solid hsl(var(--border));background:hsl(var(--muted));
+    font-family:'JetBrains Mono',monospace;font-size:10.8px;color:hsl(var(--muted-foreground));
+  }
+  .console-footer .ok{display:flex;align-items:center;gap:6px;color:hsl(var(--success));font-weight:600;}
+  .console-footer .ok::before{content:'';width:6px;height:6px;border-radius:50%;background:hsl(var(--success));box-shadow:0 0 0 3px hsl(var(--success)/.18);}
+
+  /* ---------- Experience ---------- */
+  .exp-list-wrap{display:flex;flex-direction:column;gap:16px;}
+  .exp-card{padding:0;overflow:hidden;transition:.2s ease;}
+  .exp-card:hover{border-color:hsl(var(--primary) / .35);box-shadow:0 10px 28px -16px hsl(var(--foreground) / .14);}
+  .exp-head{display:flex;gap:14px;padding:20px 22px;border-bottom:1px solid hsl(var(--border));}
+  .exp-logo{
+    width:42px;height:42px;border-radius:10px;flex-shrink:0;position:relative;overflow:hidden;
+    display:flex;align-items:center;justify-content:center;
+    font-family:'JetBrains Mono',monospace;font-weight:700;font-size:12.5px;
+    background:hsl(var(--accent));color:hsl(var(--foreground));border:1px solid hsl(var(--border));
+  }
+  .exp-logo img{width:100%;height:100%;object-fit:contain;padding:6px;}
+  .exp-logo .exp-logo-fallback{position:absolute;inset:0;display:none;align-items:center;justify-content:center;}
+  .exp-head-main{flex:1;min-width:0;}
+  .exp-top-row{display:flex;justify-content:space-between;align-items:flex-start;gap:10px;flex-wrap:wrap;}
+  .exp-role{font-size:16px;font-weight:700;letter-spacing:-.01em;}
+  .exp-org{font-size:13px;color:hsl(var(--primary));font-weight:500;margin-top:2px;}
+  .exp-org .loc{color:hsl(var(--muted-foreground));font-weight:400;}
+  .exp-date{font-family:'JetBrains Mono',monospace;font-size:11px;color:hsl(var(--muted-foreground));white-space:nowrap;padding:3px 9px;border:1px solid hsl(var(--border));border-radius:999px;}
+  .exp-body{padding:18px 22px 22px;}
+  .exp-list{list-style:none;display:flex;flex-direction:column;gap:11px;margin-bottom:16px;}
+  .exp-list li{position:relative;padding-left:20px;font-size:13.6px;color:hsl(var(--muted-foreground));line-height:1.65;}
+  .exp-list li::before{content:'';position:absolute;left:0;top:7px;width:6px;height:6px;background:hsl(var(--primary));transform:rotate(45deg);border-radius:1.5px;}
+  .exp-tools{display:flex;flex-wrap:wrap;gap:6px;align-items:center;padding-top:16px;border-top:1px dashed hsl(var(--border));}
+  .exp-tools-label{font-family:'JetBrains Mono',monospace;font-size:10px;color:hsl(var(--muted-foreground));text-transform:uppercase;letter-spacing:.05em;margin-right:2px;}
+
+  /* ---------- Skills ---------- */
+  .skill-grid{display:grid;grid-template-columns:repeat(2,1fr);gap:14px;}
+  .skill-card h3{font-size:13px;font-weight:600;margin-bottom:12px;display:flex;align-items:center;gap:8px;}
+  .skill-card h3 .idx{font-family:'JetBrains Mono',monospace;color:hsl(var(--muted-foreground));font-weight:500;font-size:11.5px;}
+  .pill-row{display:flex;flex-wrap:wrap;gap:6px;}
+
+  /* ---------- Projects ---------- */
+  .proj-grid{display:grid;grid-template-columns:repeat(2,minmax(0,1fr));gap:18px;}
+  .proj-card{display:flex;flex-direction:column;height:100%;min-width:0;}
+  .proj-top{display:flex;justify-content:space-between;align-items:flex-start;margin-bottom:12px;}
+  .proj-icon{width:34px;height:34px;border-radius:8px;background:hsl(var(--primary) / .12);color:hsl(var(--primary));display:flex;align-items:center;justify-content:center;font-family:'JetBrains Mono',monospace;font-weight:700;font-size:13px;}
+  .proj-title{font-size:15px;font-weight:700;margin-bottom:6px;letter-spacing:-.01em;}
+  .proj-desc{font-size:13.3px;color:hsl(var(--muted-foreground));margin-bottom:14px;}
+  .proj-tags{display:flex;flex-wrap:wrap;gap:6px;margin-bottom:16px;}
+
+  .proj-gallery{display:flex;gap:7px;overflow-x:auto;padding-top:14px;margin-top:auto;border-top:1px dashed hsl(var(--border));scrollbar-width:thin;min-width:0;max-width:100%;}
+  .proj-desc,.proj-title{overflow-wrap:anywhere;}
+  .proj-gallery::-webkit-scrollbar{height:4px;}
+  .proj-gallery::-webkit-scrollbar-thumb{background:hsl(var(--border));border-radius:99px;}
+  .proj-thumb-sm{
+    position:relative;flex:0 0 auto;width:72px;height:50px;border-radius:7px;overflow:hidden;
+    border:1px solid hsl(var(--border));cursor:pointer;padding:0;background:hsl(var(--muted));
+  }
+  .proj-thumb-sm img{width:100%;height:100%;object-fit:cover;display:block;transition:transform .25s ease;}
+  .proj-thumb-sm:hover img{transform:scale(1.08);}
+  .proj-thumb-eye{
+    position:absolute;inset:0;display:flex;align-items:center;justify-content:center;
+    background:hsl(240 10% 4% / 0);opacity:0;transition:.18s ease;color:#fff;
+  }
+  .proj-thumb-sm:hover .proj-thumb-eye{opacity:1;background:hsl(240 10% 4% / .42);}
+
+  /* ---------- Image modal ---------- */
+  .modal-overlay{
+    position:fixed;inset:0;z-index:100;padding:32px;
+    display:flex;align-items:center;justify-content:center;
+    background:hsl(240 10% 4% / .78);backdrop-filter:blur(4px);
+    opacity:0;visibility:hidden;transition:opacity .2s ease, visibility .2s ease;
+  }
+  .modal-overlay.show{opacity:1;visibility:visible;}
+  .modal-box{
+    position:relative;width:100%;max-width:920px;max-height:86vh;
+    background:hsl(var(--card));border:1px solid hsl(var(--border));border-radius:var(--radius);
+    overflow:hidden;display:flex;flex-direction:column;
+    transform:scale(.96) translateY(10px);transition:transform .22s ease;
+  }
+  .modal-overlay.show .modal-box{transform:scale(1) translateY(0);}
+  .modal-box img{width:100%;display:block;max-height:68vh;object-fit:contain;background:hsl(var(--muted));}
+  .modal-caption{display:flex;align-items:center;justify-content:space-between;gap:12px;padding:14px 20px;border-top:1px solid hsl(var(--border));}
+  .modal-caption strong{font-size:13.5px;font-weight:700;letter-spacing:-.01em;}
+  .modal-counter{font-size:11.5px;color:hsl(var(--muted-foreground));font-family:'JetBrains Mono',monospace;white-space:nowrap;}
+  .modal-close{
+    position:absolute;top:12px;right:12px;z-index:2;width:32px;height:32px;border-radius:8px;
+    display:flex;align-items:center;justify-content:center;cursor:pointer;
+    background:hsl(var(--card) / .92);border:1px solid hsl(var(--border));color:hsl(var(--foreground));
+    transition:.15s ease;
+  }
+  .modal-close:hover{background:hsl(var(--accent));}
+  .modal-nav{
+    position:absolute;top:calc(50% - 25px);z-index:2;width:36px;height:36px;border-radius:50%;
+    display:flex;align-items:center;justify-content:center;cursor:pointer;
+    background:hsl(var(--card) / .92);border:1px solid hsl(var(--border));color:hsl(var(--foreground));
+    transition:.15s ease;
+  }
+  .modal-nav:hover{background:hsl(var(--accent));}
+  .modal-prev{left:12px;}
+  .modal-next{right:12px;}
+
+  /* ---------- Education ---------- */
+  .edu-row{display:flex;justify-content:space-between;gap:20px;flex-wrap:wrap;}
+  .gwa-badge{text-align:center;padding:14px 20px;}
+  .gwa-num{font-family:'JetBrains Mono',monospace;font-size:24px;font-weight:700;color:hsl(var(--primary));}
+  .gwa-label{font-size:10.5px;color:hsl(var(--muted-foreground));text-transform:uppercase;letter-spacing:.04em;margin-top:2px;}
+  .cert-list{display:flex;flex-direction:column;gap:10px;margin-top:20px;}
+  .cert-item{display:flex;align-items:center;gap:12px;padding:12px 14px;border:1px solid hsl(var(--border));border-radius:calc(var(--radius) - 2px);font-size:13.3px;}
+  .cert-item .cert-org{font-family:'JetBrains Mono',monospace;font-size:11px;color:hsl(var(--primary));min-width:64px;font-weight:600;}
+
+  /* ---------- Contact / Footer ---------- */
+  #contact{text-align:center;}
+  .contact-card{max-width:560px;margin:0 auto;padding:48px 32px;}
+  .contact-links{display:flex;justify-content:center;gap:10px;margin-top:26px;flex-wrap:wrap;}
+  footer{padding:28px 0;text-align:center;font-size:12.5px;color:hsl(var(--muted-foreground));}
+  footer .mono{opacity:.7;}
+
+  @media (max-width:820px){
+    .hero-grid{grid-template-columns:1fr;}
+    .skill-grid,.proj-grid{grid-template-columns:minmax(0,1fr);}
+    .navlinks{
+      position:fixed;inset:64px 0 auto 0;flex-direction:column;align-items:stretch;
+      background:hsl(var(--background));border-bottom:1px solid hsl(var(--border));
+      padding:8px;gap:2px;transform:translateY(-8px);opacity:0;pointer-events:none;transition:.18s ease;
+    }
+    .navlinks.open{transform:translateY(0);opacity:1;pointer-events:auto;}
+    .navlinks a{padding:11px 14px;}
+    .menu-toggle{display:inline-flex;}
+    h1{font-size:32px;}
+    .hero-desc{font-size:14.5px;}
+    section{padding:60px 0;}
+  }
+  @media (max-width:480px){
+    .wrap{padding:0 18px;}
+    .proj-card{padding:18px;}
+    .proj-thumb-sm{width:64px;height:46px;}
+  }
+  @media (prefers-reduced-motion: reduce){
+    html{scroll-behavior:auto;}
+    *{animation-duration:.001s !important;transition-duration:.001s !important;}
+  }
+</style>
+</head>
+<body>
+
+<header>
+  <div class="wrap nav">
+    <a href="#hero" class="brand">
+      <span class="brand-logo">
+        <img src="profile.png" alt="" id="brandImg" onerror="this.onerror=null;this.style.display='none';document.getElementById('brandFallback').style.display='flex';">
+        <span class="brand-fallback" id="brandFallback">KC</span>
+      </span>
+      
+    </a>
+    <nav class="navlinks" id="navlinks">
+      <a href="#experience" data-nav>Experience</a>
+      <a href="#skills" data-nav>Skills</a>
+      <a href="#projects" data-nav>Projects</a>
+      <a href="#education" data-nav>Education</a>
+      <a href="#contact" data-nav>Contact</a>
+    </nav>
+    <div class="nav-right">
+      <button class="btn btn-outline btn-icon" id="themeToggle" aria-label="Toggle theme" title="Toggle theme">
+        <svg id="iconSun" width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round"><circle cx="12" cy="12" r="4"/><path d="M12 2v2M12 20v2M4.9 4.9l1.4 1.4M17.7 17.7l1.4 1.4M2 12h2M20 12h2M4.9 19.1l1.4-1.4M17.7 6.3l1.4-1.4"/></svg>
+        <svg id="iconMoon" width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" style="display:none"><path d="M21 12.8A9 9 0 1 1 11.2 3a7 7 0 0 0 9.8 9.8Z"/></svg>
+      </button>
+      <a href="#contact" class="btn btn-primary" style="display:none" id="ctaHeader">Get in touch</a>
+      <button class="btn btn-outline btn-icon menu-toggle" id="menuToggle" aria-label="Open menu">
+        <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round"><path d="M3 6h18M3 12h18M3 18h18"/></svg>
+      </button>
+    </div>
+  </div>
+</header>
+
+<main>
+  <!-- HERO -->
+  <section id="hero" style="border-bottom:1px solid hsl(var(--border));">
+    <div class="wrap">
+      <div class="hero-eyebrow"><span class="status-dot"></span>Open to Data / MDM Associate roles · Makati, PH</div>
+      <div class="hero-grid">
+        <div>
+          <h1>Turning messy records<br>into <span>trusted data</span>.</h1>
+          <p class="hero-desc">I'm Ken Joshua — a Data Processing Associate who validates, standardizes, and tracks high-volume records for global operations, and builds the internal tools that make that work visible.</p>
+          <div class="hero-cta">
+            <a href="#experience" class="btn btn-primary">View experience</a>
+            <a href="mailto:kenjoshuacabaton@gmail.com" class="btn btn-outline">kenjoshuacabaton@gmail.com</a>
+          </div>
+          <div class="hero-meta">
+            <span class="badge badge-mono">MySQL</span>
+            <span class="badge badge-mono">SQL</span>
+            <span class="badge badge-mono">Excel · Power Query</span>
+            <span class="badge badge-mono">MDM</span>
+            <span class="badge badge-mono">Chart.js</span>
+          </div>
+        </div>
+        <div>
+          <div class="console">
+            <div class="console-bar">
+              <span class="dot"></span><span class="dot"></span><span class="dot"></span>
+              <span class="console-title">profile.sql</span>
+              <button class="console-copy" id="copyBtn" title="Copy query">
+                <svg width="12" height="12" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><rect x="9" y="9" width="13" height="13" rx="2"/><path d="M5 15H4a2 2 0 0 1-2-2V4a2 2 0 0 1 2-2h9a2 2 0 0 1 2 2v1"/></svg>
+                <span id="copyLabel">Copy</span>
+              </button>
+            </div>
+            <div class="console-code">
+              <div class="console-lines" id="consoleLines"></div>
+              <div class="console-body" id="consoleBody"></div>
+            </div>
+            <div class="result-wrap" id="resultWrap">
+              <table class="result-table">
+                <tbody>
+                  <tr><td>name</td><td class="c-str">"Ken Joshua I. Cabaton"</td></tr>
+                  <tr><td>role</td><td class="c-str">"Data Processing Associate"</td></tr>
+                  <tr><td>based_in</td><td class="c-str">"Makati City, PH"</td></tr>
+                  <tr><td>focus</td><td class="c-str">"MDM · SQL · data validation"</td></tr>
+                  <tr><td>degree</td><td class="c-str">"BS Info. Systems, Cum Laude"</td></tr>
+                </tbody>
+              </table>
+            </div>
+            <div class="console-footer">
+              <span class="ok">Query OK</span>
+              <span id="footerMeta">running…</span>
+            </div>
+          </div>
+        </div>
+      </div>
+    </div>
+  </section>
+
+  <!-- EXPERIENCE -->
+  <section id="experience">
+    <div class="wrap">
+      <div class="eyebrow">01 · WORK HISTORY</div>
+      <h2 class="section-title">Experience</h2>
+      <p class="section-sub">From hospital record systems to global order operations — building reliability into data, one validation rule at a time.</p>
+
+      <div class="exp-list-wrap">
+        <div class="card exp-card">
+          <div class="exp-head">
+            <div class="exp-logo">
+              <img src="KMC-logo.png" alt="KMC Solutions logo"
+                   onerror="this.onerror=null;this.style.display='none';this.nextElementSibling.style.display='flex';">
+              <span class="exp-logo-fallback">KMC</span>
+            </div>
+            <div class="exp-head-main">
+              <div class="exp-top-row">
+                <div>
+                  <div class="exp-role">Data Processing Associate</div>
+                  <div class="exp-org">KMC Mag Solutions (Moscord Pte Ltd.) <span class="loc">· BGC, Taguig City</span></div>
+                </div>
+                <span class="exp-date">APR 2026 — PRESENT</span>
+              </div>
+            </div>
+          </div>
+          <div class="exp-body">
+            <ul class="exp-list">
+              <li>Managed and validated high-volume customer orders across the APAC and Americas regions, ensuring data accuracy against operational service-level requirements.</li>
+              <li>Designed and shipped a web-based order tracking system in HTML, CSS, and vanilla JavaScript — improving data visibility and cutting manual follow-up.</li>
+              <li>Partnered with logistics and customer service teams to investigate order and data discrepancies, supporting process compliance and continuous improvement.</li>
+            </ul>
+            <div class="exp-tools">
+              <span class="exp-tools-label">Tools</span>
+              <span class="badge badge-mono">SQL</span>
+              <span class="badge badge-mono">Excel</span>
+              <span class="badge badge-mono">HTML/CSS/JS</span>
+              <span class="badge badge-mono">Data Validation</span>
+            </div>
+          </div>
+        </div>
+
+        <div class="card exp-card">
+          <div class="exp-head">
+            <div class="exp-logo">
+              <img src="https://commons.wikimedia.org/wiki/Special:FilePath/DOH%20Logo.png" alt="Department of Health Philippines logo"
+                   onerror="this.onerror=null;this.style.display='none';this.nextElementSibling.style.display='flex';">
+              <span class="exp-logo-fallback">DOH</span>
+            </div>
+            <div class="exp-head-main">
+              <div class="exp-top-row">
+                <div>
+                  <div class="exp-role">Web Developer / Technical Support Intern</div>
+                  <div class="exp-org">DOH Bicol Center for Health Development <span class="loc">· ICT Unit</span></div>
+                </div>
+                <span class="exp-date">FEB — MAY 2025</span>
+              </div>
+            </div>
+          </div>
+          <div class="exp-body">
+            <ul class="exp-list">
+              <li>Maintained internal web-based systems and resolved daily technical issues to keep staff operations uninterrupted.</li>
+              <li>Identified and corrected data inconsistencies through validation and system review to keep records accurate and reliable.</li>
+              <li>Supported end users with navigation and troubleshooting, and worked with ICT staff on compliant system updates.</li>
+            </ul>
+            <div class="exp-tools">
+              <span class="exp-tools-label">Tools</span>
+              <span class="badge badge-mono">System Maintenance</span>
+              <span class="badge badge-mono">UAT</span>
+              <span class="badge badge-mono">Troubleshooting</span>
+            </div>
+          </div>
+        </div>
+      </div>
+    </div>
+  </section>
+
+  <!-- SKILLS -->
+  <section id="skills">
+    <div class="wrap">
+      <div class="eyebrow">02 · CAPABILITIES</div>
+      <h2 class="section-title">Skills</h2>
+      <p class="section-sub">Grouped the way I use them — data operations, system fluency, support, and the process discipline that holds it together.</p>
+
+      <div class="skill-grid">
+        <div class="card skill-card">
+          <h3><span class="idx">§1</span>Reporting &amp; Data Operations</h3>
+          <div class="pill-row">
+            <span class="badge">Excel · Pivot Tables</span>
+            <span class="badge">VLOOKUP</span>
+            <span class="badge">Power Query</span>
+            <span class="badge">Data Validation</span>
+            <span class="badge">Data Standardization</span>
+            <span class="badge">Data Cleansing</span>
+            <span class="badge">MDM</span>
+            <span class="badge">KPI Tracking</span>
+            <span class="badge">Root-Cause Analysis</span>
+          </div>
+        </div>
+        <div class="card skill-card">
+          <h3><span class="idx">§2</span>Systems &amp; Technical</h3>
+          <div class="pill-row">
+            <span class="badge">SQL / MySQL</span>
+            <span class="badge">Data Extraction</span>
+            <span class="badge">Basic DB Architecture</span>
+            <span class="badge">User Access Mgmt</span>
+            <span class="badge">System Navigation</span>
+            <span class="badge">Google Sheets</span>
+            <span class="badge">Chart.js</span>
+          </div>
+        </div>
+        <div class="card skill-card">
+          <h3><span class="idx">§3</span>System Support &amp; Docs</h3>
+          <div class="pill-row">
+            <span class="badge">Troubleshooting</span>
+            <span class="badge">User Support &amp; Training</span>
+            <span class="badge">UAT</span>
+            <span class="badge">Web System Maintenance</span>
+            <span class="badge">Application Updates</span>
+          </div>
+        </div>
+        <div class="card skill-card">
+          <h3><span class="idx">§4</span>Professional &amp; Functional</h3>
+          <div class="pill-row">
+            <span class="badge">Process Optimization</span>
+            <span class="badge">Org. Compliance</span>
+            <span class="badge">Cross-functional Collab</span>
+            <span class="badge">Audit-Ready Records</span>
+            <span class="badge">Attention to Detail</span>
+          </div>
+        </div>
+      </div>
+    </div>
+  </section>
+
+  <!-- PROJECTS -->
+  <section id="projects">
+    <div class="wrap">
+      <div class="eyebrow">03 · SELECTED WORK</div>
+      <h2 class="section-title">Projects</h2>
+      <p class="section-sub">Four systems, one thread: take unreliable or scattered records and give them structure people can trust.</p>
+
+      <div class="proj-grid">
+        <div class="card card-hover proj-card">
+          <div class="proj-top">
+            <div class="proj-icon">01</div>
+            <span class="badge badge-primary">Work</span>
+          </div>
+          <div class="proj-title">Order Tracking System</div>
+          <p class="proj-desc">A web-based tracker built for KMC's ARA &amp; Americas order desk — replacing manual follow-up with live visibility into order status and discrepancies.</p>
+          <div class="proj-tags">
+            <span class="badge badge-mono badge-outline">HTML</span>
+            <span class="badge badge-mono badge-outline">CSS</span>
+            <span class="badge badge-mono badge-outline">JavaScript</span>
+          </div>
+          <div class="proj-gallery" data-project="ordertracker"></div>
+        </div>
+
+        <div class="card card-hover proj-card">
+          <div class="proj-top">
+            <div class="proj-icon">02</div>
+            <span class="badge badge-primary">DOH</span>
+          </div>
+          <div class="proj-title">Record Files Management System</div>
+          <p class="proj-desc">Modular database that organizes physical and digital records into searchable shelves and sections, with a full audit-log module tracking every user action for accountability.</p>
+          <div class="proj-tags">
+            <span class="badge badge-mono badge-outline">Audit Logging</span>
+            <span class="badge badge-mono badge-outline">SQL</span>
+          </div>
+          <div class="proj-gallery" data-project="recordfiles"></div>
+        </div>
+
+        <div class="card card-hover proj-card">
+          <div class="proj-top">
+            <div class="proj-icon">03</div>
+            <span class="badge badge-primary">Thesis</span>
+          </div>
+          <div class="proj-title">Albay Dialect Dictionary</div>
+          <p class="proj-desc">Best Undergraduate Thesis — a MySQL relational database managing 300+ structured dialect records, with standardization rules for consistent, searchable formatting.</p>
+          <div class="proj-tags">
+            <span class="badge badge-mono badge-outline">MySQL</span>
+            <span class="badge badge-mono badge-outline">Data Standardization</span>
+          </div>
+          <div class="proj-gallery" data-project="albay"></div>
+        </div>
+
+        <div class="card card-hover proj-card">
+          <div class="proj-top">
+            <div class="proj-icon">04</div>
+            <span class="badge badge-primary">Client</span>
+          </div>
+          <div class="proj-title">Cookie Ordering System</div>
+          <p class="proj-desc">A web ordering platform with an interactive Chart.js dashboard surfacing revenue, order volume, and new-user activity, backed by a structured MySQL schema.</p>
+          <div class="proj-tags">
+            <span class="badge badge-mono badge-outline">MySQL</span>
+            <span class="badge badge-mono badge-outline">Chart.js</span>
+          </div>
+          <div class="proj-gallery" data-project="cookie"></div>
+        </div>
+      </div>
+    </div>
+  </section>
+
+  <!-- EDUCATION -->
+  <section id="education">
+    <div class="wrap">
+      <div class="eyebrow">04 · EDUCATION &amp; CERTIFICATIONS</div>
+      <h2 class="section-title">Education</h2>
+
+      <div class="card edu-row">
+        <div>
+          <div class="tl-role" style="margin-bottom:4px;">BS in Information Systems</div>
+          <div class="tl-org" style="margin-bottom:14px;">Bicol University Polangui · 2021 – 2025</div>
+          <div class="pill-row">
+            <span class="badge">Cum Laude</span>
+            <span class="badge">Best Undergraduate Thesis</span>
+            <span class="badge">Dean's Lister '21–'22, '24–'25</span>
+          </div>
+        </div>
+        <div class="gwa-badge card" style="border-style:dashed;">
+          <div class="gwa-num">1.72</div>
+          <div class="gwa-label">General Weighted Avg</div>
+        </div>
+      </div>
+
+      <div class="cert-list">
+        <div class="cert-item"><span class="cert-org">TESDA</span>Practical Application of AI for Daily Use</div>
+        <div class="cert-item"><span class="cert-org">DICT</span>AI Essentials: Unlocking the Power of Artificial Intelligence</div>
+        <div class="cert-item"><span class="cert-org">DICT</span>Cyber Resilience: Data Leaks Awareness</div>
+      </div>
+    </div>
+  </section>
+
+  <!-- CONTACT -->
+  <section id="contact">
+    <div class="wrap">
+      <div class="card contact-card">
+        <div class="eyebrow" style="justify-content:center;">05 · GET IN TOUCH</div>
+        <h2 class="section-title">Let's work together</h2>
+        <p class="section-sub" style="margin:0 auto;">Open to Data / MDM Associate roles across Metro Manila. I usually reply within a day.</p>
+        <div class="contact-links">
+          <a href="mailto:kenjoshuacabaton@gmail.com" class="btn btn-primary">Email me</a>
+          <a href="tel:+639469310290" class="btn btn-outline">Call</a>
+          <a href="https://www.linkedin.com/in/ken-joshua-cabaton/" target="_blank" rel="noopener" class="btn btn-outline">LinkedIn ↗</a>
+        </div>
+      </div>
+    </div>
+  </section>
+</main>
+
+<footer>
+  <div class="wrap">
+    <span class="mono">© 2026 Ken Joshua I. Cabaton · Makati City, PH</span>
+  </div>
+</footer>
+
+<div class="modal-overlay" id="modalOverlay">
+  <div class="modal-box">
+    <button class="modal-close" id="modalClose" aria-label="Close">
+      <svg width="15" height="15" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round"><path d="M18 6 6 18M6 6l12 12"/></svg>
+    </button>
+    <button class="modal-nav modal-prev" id="modalPrev" aria-label="Previous screenshot">
+      <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M15 18l-6-6 6-6"/></svg>
+    </button>
+    <button class="modal-nav modal-next" id="modalNext" aria-label="Next screenshot">
+      <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M9 18l6-6-6-6"/></svg>
+    </button>
+    <img id="modalImg" src="" alt="">
+    <div class="modal-caption">
+      <strong id="modalTitle"></strong>
+      <span id="modalCounter" class="modal-counter"></span>
+    </div>
+  </div>
+</div>
+
+<script>
+  // ---- Theme toggle (in-memory, respects system preference on load) ----
+  const root = document.documentElement;
+  const themeBtn = document.getElementById('themeToggle');
+  const iconSun = document.getElementById('iconSun');
+  const iconMoon = document.getElementById('iconMoon');
+
+  function setTheme(dark){
+    root.classList.toggle('dark', dark);
+    iconSun.style.display = dark ? 'none' : 'inline-block';
+    iconMoon.style.display = dark ? 'inline-block' : 'none';
+  }
+  const prefersDark = window.matchMedia && window.matchMedia('(prefers-color-scheme: dark)').matches;
+  setTheme(prefersDark);
+  themeBtn.addEventListener('click', () => setTheme(!root.classList.contains('dark')));
+
+  // ---- Mobile menu ----
+  const menuToggle = document.getElementById('menuToggle');
+  const navlinks = document.getElementById('navlinks');
+  menuToggle.addEventListener('click', () => navlinks.classList.toggle('open'));
+  navlinks.querySelectorAll('a').forEach(a => a.addEventListener('click', () => navlinks.classList.remove('open')));
+
+  // ---- Active nav link on scroll ----
+  const sections = ['experience','skills','projects','education','contact'].map(id => document.getElementById(id));
+  const navA = document.querySelectorAll('[data-nav]');
+  const headerCta = document.getElementById('ctaHeader');
+  const hero = document.getElementById('hero');
+
+  const io = new IntersectionObserver((entries) => {
+    entries.forEach(entry => {
+      if(entry.isIntersecting){
+        navA.forEach(a => a.classList.toggle('active', a.getAttribute('href') === '#' + entry.target.id));
+      }
+    });
+  }, { rootMargin: '-45% 0px -50% 0px', threshold: 0 });
+  sections.forEach(s => s && io.observe(s));
+
+  const heroIo = new IntersectionObserver((entries) => {
+    entries.forEach(entry => { headerCta.style.display = entry.isIntersecting ? 'none' : 'inline-flex'; });
+  }, { threshold: 0 });
+  heroIo.observe(hero);
+
+  // ---- Typewriter console ----
+  const queryLines = [
+    '<span class="c-kw">SELECT</span> <span class="c-col">name</span>, <span class="c-col">role</span>, <span class="c-col">based_in</span>, <span class="c-col">focus</span>, <span class="c-col">degree</span>',
+    '<span class="c-kw">FROM</span> <span class="c-fn">professionals</span>',
+    '<span class="c-kw">WHERE</span> id = <span class="c-str">\'ken_joshua\'</span>;',
+  ];
+  const queryPlainText = "SELECT name, role, based_in, focus, degree\nFROM professionals\nWHERE id = 'ken_joshua';";
+
+  const body = document.getElementById('consoleBody');
+  const lineNums = document.getElementById('consoleLines');
+  const resultWrap = document.getElementById('resultWrap');
+  const footerMeta = document.getElementById('footerMeta');
+  let qi = 0;
+
+  function typeQueryLine(){
+    if(qi >= queryLines.length){
+      const c = document.createElement('span');
+      c.className = 'caret';
+      body.appendChild(c);
+      setTimeout(() => {
+        c.remove();
+        resultWrap.classList.add('show');
+        footerMeta.textContent = '5 rows · 12 ms';
+      }, 450);
+      return;
+    }
+    const numDiv = document.createElement('div');
+    numDiv.textContent = qi + 1;
+    lineNums.appendChild(numDiv);
+
+    const div = document.createElement('div');
+    div.innerHTML = queryLines[qi];
+    body.appendChild(div);
+    qi++;
+    setTimeout(typeQueryLine, 260);
+  }
+  setTimeout(typeQueryLine, 400);
+
+  // ---- Copy query button ----
+  const copyBtn = document.getElementById('copyBtn');
+  const copyLabel = document.getElementById('copyLabel');
+  copyBtn.addEventListener('click', async () => {
+    try{
+      await navigator.clipboard.writeText(queryPlainText);
+      copyLabel.textContent = 'Copied';
+      setTimeout(() => { copyLabel.textContent = 'Copy'; }, 1500);
+    }catch(e){
+      copyLabel.textContent = 'Select & copy';
+      setTimeout(() => { copyLabel.textContent = 'Copy'; }, 1500);
+    }
+  });
+  // ---- Project galleries (swap these URLs for your real screenshots) ----
+  const EYE_ICON = '<svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M1 12s4-7 11-7 11 7 11 7-4 7-11 7-11-7-11-7Z"/><circle cx="12" cy="12" r="3"/></svg>';
+
+  const projects = {
+    ordertracker: {
+      title: 'Order Tracking System',
+      images: [
+        'https://placehold.co/1200x750/6d5ef5/ffffff?text=Dashboard+View&font=jetbrains-mono',
+        'https://placehold.co/1200x750/5b4fe0/ffffff?text=Order+Detail&font=jetbrains-mono',
+        'https://placehold.co/1200x750/4a3fc7/ffffff?text=Supplier+Tags&font=jetbrains-mono',
+        'https://placehold.co/1200x750/6d5ef5/ffffff?text=XLSX+Export&font=jetbrains-mono',
+      ],
+    },
+    recordfiles: {
+      title: 'Record Files Management System',
+      images: [
+        'https://placehold.co/1200x750/10b981/ffffff?text=Shelf+Navigator&font=jetbrains-mono',
+        'https://placehold.co/1200x750/0d9c6e/ffffff?text=Record+Search&font=jetbrains-mono',
+        'https://placehold.co/1200x750/0a8a5f/ffffff?text=Audit+Log&font=jetbrains-mono',
+      ],
+    },
+    albay: {
+      title: 'Albay Dialect Dictionary',
+      images: [
+        'https://placehold.co/1200x750/f59e0b/ffffff?text=Dictionary+Home&font=jetbrains-mono',
+        'https://placehold.co/1200x750/e08c00/ffffff?text=Word+Entry&font=jetbrains-mono',
+        'https://placehold.co/1200x750/cc7d00/ffffff?text=Category+Browser&font=jetbrains-mono',
+        'https://placehold.co/1200x750/f59e0b/ffffff?text=Schema+ERD&font=jetbrains-mono',
+        'https://placehold.co/1200x750/e08c00/ffffff?text=Admin+Panel&font=jetbrains-mono',
+        'https://placehold.co/1200x750/cc7d00/ffffff?text=Search+Results&font=jetbrains-mono',
+      ],
+    },
+    cookie: {
+      title: 'Cookie Ordering System',
+      images: [
+        'https://placehold.co/1200x750/ec4899/ffffff?text=Storefront&font=jetbrains-mono',
+        'https://placehold.co/1200x750/d63384/ffffff?text=Chart.js+Dashboard&font=jetbrains-mono',
+        'https://placehold.co/1200x750/c2185b/ffffff?text=Order+Summary&font=jetbrains-mono',
+      ],
+    },
+  };
+
+  // Render each small thumbnail strip
+  document.querySelectorAll('.proj-gallery').forEach(galleryEl => {
+    const key = galleryEl.getAttribute('data-project');
+    const proj = projects[key];
+    if(!proj) return;
+    proj.images.forEach((src, idx) => {
+      const btn = document.createElement('button');
+      btn.className = 'proj-thumb-sm';
+      btn.type = 'button';
+      btn.setAttribute('aria-label', `View ${proj.title} screenshot ${idx + 1}`);
+      btn.innerHTML = `<img src="${src}" alt="${proj.title} screenshot ${idx + 1}" loading="lazy"><span class="proj-thumb-eye">${EYE_ICON}</span>`;
+      btn.addEventListener('click', () => openGallery(key, idx));
+      galleryEl.appendChild(btn);
+    });
+  });
+
+  // ---- Modal with prev/next navigation ----
+  const modalOverlay = document.getElementById('modalOverlay');
+  const modalImg = document.getElementById('modalImg');
+  const modalTitle = document.getElementById('modalTitle');
+  const modalCounter = document.getElementById('modalCounter');
+  const modalClose = document.getElementById('modalClose');
+  const modalPrev = document.getElementById('modalPrev');
+  const modalNext = document.getElementById('modalNext');
+
+  let currentKey = null;
+  let currentIndex = 0;
+
+  function renderModal(){
+    const proj = projects[currentKey];
+    modalImg.src = proj.images[currentIndex];
+    modalImg.alt = `${proj.title} screenshot ${currentIndex + 1}`;
+    modalTitle.textContent = proj.title;
+    modalCounter.textContent = `${currentIndex + 1} / ${proj.images.length}`;
+    const multi = proj.images.length > 1;
+    modalPrev.style.display = multi ? 'flex' : 'none';
+    modalNext.style.display = multi ? 'flex' : 'none';
+  }
+  function openGallery(key, idx){
+    currentKey = key;
+    currentIndex = idx;
+    renderModal();
+    modalOverlay.classList.add('show');
+    document.body.style.overflow = 'hidden';
+  }
+  function closeProjectModal(){
+    modalOverlay.classList.remove('show');
+    document.body.style.overflow = '';
+  }
+  function stepModal(delta){
+    const proj = projects[currentKey];
+    currentIndex = (currentIndex + delta + proj.images.length) % proj.images.length;
+    renderModal();
+  }
+  modalOverlay.addEventListener('click', (e) => { if(e.target === modalOverlay) closeProjectModal(); });
+  modalClose.addEventListener('click', closeProjectModal);
+  modalPrev.addEventListener('click', () => stepModal(-1));
+  modalNext.addEventListener('click', () => stepModal(1));
+  document.addEventListener('keydown', (e) => {
+    if(!modalOverlay.classList.contains('show')) return;
+    if(e.key === 'Escape') closeProjectModal();
+    if(e.key === 'ArrowLeft') stepModal(-1);
+    if(e.key === 'ArrowRight') stepModal(1);
+  });
+</script>
+</body>
+</html>
