@@ -312,35 +312,309 @@
   .modal-prev{left:12px;}
   .modal-next{right:12px;}
 
-  /* ---------- Education ---------- */
-  .edu-row{display:flex;justify-content:space-between;gap:20px;flex-wrap:wrap;}
-  .gwa-badge{text-align:center;padding:14px 20px;}
-  .gwa-num{font-family:'JetBrains Mono',monospace;font-size:24px;font-weight:700;color:hsl(var(--primary));}
-  .gwa-label{font-size:10.5px;color:hsl(var(--muted-foreground));text-transform:uppercase;letter-spacing:.04em;margin-top:2px;}
+  /* ============================================================
+     EDUCATION — Apple Card Redesign
+     All colors derived from CSS variables only.
+     ============================================================ */
 
-  /* Education card: inverted glass panel — black-tinted glass in light mode, white-tinted glass in dark mode */
-  .edu-row.card{
-    position:relative;
-    background:linear-gradient(150deg, hsl(var(--foreground) / .97) 0%, hsl(var(--foreground) / .94) 45%, hsl(var(--foreground) / .86) 72%, hsl(var(--muted-foreground) / .55) 100%);
-    color:hsl(var(--background));
-    border:1px solid hsl(var(--background) / .16);
-    backdrop-filter:blur(10px) saturate(110%);
-    -webkit-backdrop-filter:blur(10px) saturate(110%);
-    box-shadow:0 8px 32px hsl(var(--foreground) / .22), inset 0 1px 0 hsl(var(--background) / .06);
-    overflow:hidden;
+  .edu-grid{display:grid;grid-template-columns:3fr 2fr;gap:40px;align-items:start;}
+  .edu-col{min-width:0;}
+
+  /* ---- Card wrapper: perspective container for 3-D tilt ---- */
+  .apple-card-scene{
+    perspective: 900px;
+    width: 100%;
   }
-  .edu-row.card::before{
-    content:'';position:absolute;inset:0;pointer-events:none;
-    background:linear-gradient(135deg, hsl(var(--background) / .06), transparent 60%);
+
+  /* ---- The card itself ---- */
+  .debit-card{
+    position: relative;
+    width: 100%;
+    aspect-ratio: 1.586 / 1;   /* ISO 7810 ID-1 ratio */
+    border-radius: 20px;
+    padding: 22px 24px;
+    display: flex;
+    flex-direction: column;
+    justify-content: space-between;
+    gap: 0;
+    overflow: hidden;
+    cursor: default;
+    user-select: none;
+
+    /* Titanium finish: layered gradients over the foreground variable */
+    background:
+      /* top-left gloss wash */
+      radial-gradient(
+        ellipse 70% 55% at 25% 18%,
+        hsl(var(--background) / .13) 0%,
+        transparent 70%
+      ),
+      /* horizontal brushed-metal bands */
+      repeating-linear-gradient(
+        180deg,
+        hsl(var(--background) / .04) 0px,
+        hsl(var(--background) / .0)  2px,
+        hsl(var(--background) / .03) 4px,
+        hsl(var(--background) / .0)  6px
+      ),
+      /* base titanium ramp */
+      linear-gradient(
+        148deg,
+        hsl(var(--foreground) / .98)  0%,
+        hsl(var(--foreground) / .91) 38%,
+        hsl(var(--foreground) / .83) 62%,
+        hsl(var(--muted-foreground) / .6) 88%,
+        hsl(var(--muted-foreground) / .45) 100%
+      );
+
+    color: hsl(var(--background));
+
+    /* Ring + depth shadow */
+    box-shadow:
+      0 0 0 1px hsl(var(--background) / .12),          /* inner rim */
+      0 2px  4px -2px hsl(var(--foreground) / .30),
+      0 8px 18px -8px hsl(var(--foreground) / .32),
+      0 24px 52px -18px hsl(var(--foreground) / .38),
+      inset 0 1px 0 hsl(var(--background) / .18),       /* top highlight */
+      inset 0 -1px 0 hsl(0 0% 0% / .14);               /* bottom depth */
+
+    /* Smooth tilt transition when mouse leaves */
+    transition:
+      transform 0.06s ease-out,
+      box-shadow 0.3s ease;
+
+    will-change: transform;
+    transform-style: preserve-3d;
   }
-  .edu-row.card > *{position:relative;z-index:1;}
-  .edu-row .tl-org{color:hsl(var(--background) / .65);}
-  .edu-row .pill-row .badge{background:hsl(var(--background) / .12);color:hsl(var(--background));border-color:hsl(var(--background) / .28);backdrop-filter:blur(6px);}
-  .edu-row .gwa-badge.card{background:hsl(var(--background) / .08);border:1px dashed hsl(var(--background) / .32) !important;backdrop-filter:none;box-shadow:none;}
-  .edu-row .gwa-num{color:hsl(var(--background));}
-  .edu-row .gwa-label{color:hsl(var(--background) / .6);}
+
+  /* Tilt-active state — controlled by JS */
+  .debit-card.tilting{
+    transition: none; /* instant during mouse move */
+  }
+
+  /* ---- Gloss stripe ---- */
+  .debit-card::before{
+    content: '';
+    position: absolute;
+    inset: 0;
+    border-radius: inherit;
+    background: linear-gradient(
+      122deg,
+      hsl(var(--background) / .22)  0%,
+      hsl(var(--background) / .09) 28%,
+      transparent 52%
+    );
+    pointer-events: none;
+    z-index: 1;
+  }
+
+  /* ---- Edge micro-bevel (inset ring) ---- */
+  .debit-card::after{
+    content: '';
+    position: absolute;
+    inset: 0;
+    border-radius: inherit;
+    box-shadow: inset 0 0 0 1px hsl(var(--background) / .16);
+    pointer-events: none;
+    z-index: 2;
+  }
+
+  /* All content layers sit above the pseudo-elements */
+  .debit-card > *{ position: relative; z-index: 3; }
+
+  /* ---- Top row: chip + brand ---- */
+  .debit-card-top{
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+  }
+
+  /* EMV chip — gold contact pads */
+  .debit-chip{
+    width: 36px;
+    height: 28px;
+    border-radius: 5px;
+    background: linear-gradient(
+      145deg,
+      hsl(45 70% 72%)  0%,
+      hsl(42 60% 58%) 40%,
+      hsl(45 65% 68%) 65%,
+      hsl(40 55% 50%) 100%
+    );
+    box-shadow:
+      0 1px 3px hsl(0 0% 0% / .28),
+      inset 0 1px 0 hsl(45 80% 85% / .6);
+    position: relative;
+    overflow: hidden;
+  }
+
+  /* Contact pad grid */
+  .debit-chip::before{
+    content: '';
+    position: absolute;
+    inset: 4px 5px;
+    background:
+      /* vertical dividers */
+      repeating-linear-gradient(
+        90deg,
+        transparent 0px, transparent 9px,
+        hsl(40 50% 40% / .35) 9px, hsl(40 50% 40% / .35) 10px
+      ),
+      /* horizontal dividers */
+      repeating-linear-gradient(
+        180deg,
+        transparent 0px, transparent 7px,
+        hsl(40 50% 40% / .35) 7px, hsl(40 50% 40% / .35) 8px
+      );
+    border-radius: 2px;
+  }
+
+  /* NFC antenna arc */
+  .debit-chip::after{
+    content: '';
+    position: absolute;
+    right: -14px;
+    top: 50%;
+    transform: translateY(-50%);
+    width: 22px;
+    height: 22px;
+    border-radius: 50%;
+    border: 1.5px solid hsl(var(--background) / .22);
+    box-shadow:
+      4px 0 0 -1px hsl(var(--background) / .14),
+      8px 0 0 -2px hsl(var(--background) / .09);
+  }
+
+  .debit-brand{
+    font-family: 'JetBrains Mono', monospace;
+    font-weight: 700;
+    font-size: 12px;
+    letter-spacing: .1em;
+    opacity: .7;
+    text-transform: uppercase;
+  }
+
+  /* ---- GWA / number block ---- */
+  .debit-card-number{
+    font-family: 'JetBrains Mono', monospace;
+    font-size: 36px;
+    font-weight: 700;
+    letter-spacing: .01em;
+    line-height: 1;
+    /* Subtle emboss: light top, shadow bottom */
+    text-shadow:
+      0 1px 0 hsl(var(--background) / .18),
+      0 -1px 0 hsl(0 0% 0% / .18);
+  }
+
+  .debit-card-number-label{
+    font-family: 'Inter', sans-serif;
+    font-size: 9px;
+    font-weight: 700;
+    text-transform: uppercase;
+    letter-spacing: .1em;
+    opacity: .52;
+    margin-left: 7px;
+    vertical-align: middle;
+  }
+
+  /* ---- Honors pill row ---- */
+  .debit-honors{
+    display: flex;
+    flex-wrap: wrap;
+    gap: 5px;
+    margin-top: -4px;
+  }
+
+  .debit-honor{
+    font-size: 9px;
+    font-weight: 600;
+    letter-spacing: .03em;
+    white-space: nowrap;
+    padding: 4px 9px;
+    border-radius: 999px;
+    /* Frosted glass pill */
+    background: hsl(var(--background) / .13);
+    border: 1px solid hsl(var(--background) / .22);
+    color: hsl(var(--background));
+    backdrop-filter: blur(4px);
+    /* Subtle lift on hover */
+    transition: background .18s ease, border-color .18s ease;
+  }
+
+  .debit-card:hover .debit-honor{
+    background: hsl(var(--background) / .18);
+    border-color: hsl(var(--background) / .32);
+  }
+
+  /* ---- Bottom meta row ---- */
+  .debit-card-bottom{
+    display: flex;
+    justify-content: space-between;
+    align-items: flex-end;
+    gap: 12px;
+  }
+
+  .debit-label{
+    font-size: 8.5px;
+    text-transform: uppercase;
+    letter-spacing: .1em;
+    opacity: .48;
+    margin-bottom: 3px;
+    font-family: 'Inter', sans-serif;
+    font-weight: 600;
+  }
+
+  .debit-name{
+    font-size: 13px;
+    font-weight: 600;
+    letter-spacing: .01em;
+    opacity: .92;
+  }
+
+  .debit-expiry{
+    font-family: 'JetBrains Mono', monospace;
+    font-size: 12px;
+    font-weight: 600;
+    opacity: .88;
+  }
+
+  /* ---- Footer strip ---- */
+  .debit-card-footer{
+    display: flex;
+    justify-content: space-between;
+    gap: 10px;
+    font-size: 9.5px;
+    opacity: .52;
+    padding-top: 10px;
+    margin-top: 0;
+    border-top: 1px solid hsl(var(--background) / .18);
+    font-family: 'Inter', sans-serif;
+    font-weight: 500;
+    letter-spacing: .02em;
+  }
+
+  /* ---- Certifications column ---- */
+  .edu-col .pill-row .badge{background:hsl(var(--accent));color:hsl(var(--accent-foreground));border-color:hsl(var(--border));}
+  .edu-certs-label{
+    font-family:'JetBrains Mono',monospace;font-size:11px;color:hsl(var(--muted-foreground));
+    text-transform:uppercase;letter-spacing:.06em;margin-bottom:14px;font-weight:600;
+  }
   .cert-list{display:flex;flex-direction:column;gap:10px;margin-top:20px;}
-  .cert-item{display:flex;align-items:center;gap:12px;padding:12px 14px;border:1px solid hsl(var(--border));border-radius:calc(var(--radius) - 2px);font-size:13.3px;transition:opacity .9s cubic-bezier(.16,1,.3,1), transform .9s cubic-bezier(.16,1,.3,1);}
+  .cert-item{
+    display:flex;align-items:center;gap:12px;padding:12px 14px;
+    border:1px solid hsl(var(--border));border-radius:calc(var(--radius) - 2px);
+    font-size:13.3px;
+    transition:
+      opacity .9s cubic-bezier(.16,1,.3,1),
+      transform .9s cubic-bezier(.16,1,.3,1),
+      background .15s ease,
+      border-color .15s ease;
+  }
+  .cert-item:hover{
+    background:hsl(var(--accent));
+    border-color:hsl(var(--primary) / .25);
+  }
   .cert-item .cert-org{font-family:'JetBrains Mono',monospace;font-size:11px;color:hsl(var(--primary));min-width:64px;font-weight:600;}
 
   /* ---------- Contact / Footer ---------- */
@@ -350,6 +624,7 @@
   footer{padding:28px 0;text-align:center;font-size:12.5px;color:hsl(var(--muted-foreground));}
   footer .mono{opacity:.7;}
 
+  /* ---------- Responsive ---------- */
   @media (max-width:820px){
     .hero-grid{grid-template-columns:1fr;}
     .skill-grid,.proj-grid{grid-template-columns:minmax(0,1fr);}
@@ -364,6 +639,11 @@
     h1{font-size:32px;}
     .hero-desc{font-size:14.5px;}
     section{padding:60px 0;}
+    .edu-grid{grid-template-columns:1fr;gap:32px;}
+    .apple-card-scene{max-width:360px;margin:0 auto;}
+    .debit-card-number{font-size:28px;}
+    .debit-honor{font-size:8px;padding:3px 7px;}
+    .debit-name,.debit-expiry{font-size:11px;}
   }
   @media (max-width:480px){
     .wrap{padding:0 18px;}
@@ -382,12 +662,8 @@
     animation:none;
     mix-blend-mode:normal;
   }
-  ::view-transition-old(root){
-    z-index:1;
-  }
-  ::view-transition-new(root){
-    z-index:2147483646;
-  }
+  ::view-transition-old(root){z-index:1;}
+  ::view-transition-new(root){z-index:2147483646;}
 </style>
 </head>
 <body>
@@ -399,7 +675,6 @@
         <img src="profile.png" alt="" id="brandImg" onerror="this.onerror=null;this.style.display='none';document.getElementById('brandFallback').style.display='flex';">
         <span class="brand-fallback" id="brandFallback">KC</span>
       </span>
-      
     </a>
     <nav class="navlinks" id="navlinks">
       <a href="#experience" data-nav>Experience</a>
@@ -491,7 +766,7 @@
           <div class="exp-head">
             <div class="exp-logo">
               <img src="KMC-logo.png" alt="KMC Solutions logo"
-                   onerror="this.onerror=null;this.style.display='none';this.nextElementSibling.style.display='flex';">
+                  onerror="this.onerror=null;this.style.display='none';this.nextElementSibling.style.display='flex';">
               <span class="exp-logo-fallback">KMC</span>
             </div>
             <div class="exp-head-main">
@@ -524,7 +799,7 @@
           <div class="exp-head">
             <div class="exp-logo">
               <img src="https://commons.wikimedia.org/wiki/Special:FilePath/DOH%20Logo.png" alt="Department of Health Philippines logo"
-                   onerror="this.onerror=null;this.style.display='none';this.nextElementSibling.style.display='flex';">
+                  onerror="this.onerror=null;this.style.display='none';this.nextElementSibling.style.display='flex';">
               <span class="exp-logo-fallback">DOH</span>
             </div>
             <div class="exp-head-main">
@@ -686,27 +961,47 @@
     <div class="wrap">
       <div class="eyebrow reveal">04 · EDUCATION &amp; CERTIFICATIONS</div>
       <h2 class="section-title reveal">Education</h2>
+      <p class="section-sub reveal">One degree, one record — and the certifications that keep building on it.</p>
 
-      <div class="card edu-row reveal">
-        <div>
-          <div class="tl-role" style="margin-bottom:4px;">BS in Information Systems</div>
-          <div class="tl-org" style="margin-bottom:14px;">Bicol University Polangui · 2021 – 2025</div>
-          <div class="pill-row">
-            <span class="badge">Cum Laude</span>
-            <span class="badge">Best Undergraduate Thesis</span>
-            <span class="badge">Dean's Lister '21–'22, '24–'25</span>
+      <div class="edu-grid">
+        <div class="edu-col reveal">
+          <div class="edu-certs-label">Certifications</div>
+          <div class="cert-list">
+            <div class="cert-item reveal"><span class="cert-org">TESDA</span>Practical Application of AI for Daily Use</div>
+            <div class="cert-item reveal"><span class="cert-org">DICT</span>AI Essentials: Unlocking the Power of Artificial Intelligence</div>
+            <div class="cert-item reveal"><span class="cert-org">DICT</span>Cyber Resilience: Data Leaks Awareness</div>
           </div>
         </div>
-        <div class="gwa-badge card" style="border-style:dashed;">
-          <div class="gwa-num">1.72</div>
-          <div class="gwa-label">General Weighted Avg</div>
-        </div>
-      </div>
 
-      <div class="cert-list">
-        <div class="cert-item reveal"><span class="cert-org">TESDA</span>Practical Application of AI for Daily Use</div>
-        <div class="cert-item reveal"><span class="cert-org">DICT</span>AI Essentials: Unlocking the Power of Artificial Intelligence</div>
-        <div class="cert-item reveal"><span class="cert-org">DICT</span>Cyber Resilience: Data Leaks Awareness</div>
+        <div class="edu-col reveal">
+          <div class="apple-card-scene">
+            <div class="debit-card" id="appleCard" role="img" aria-label="BS Information Systems degree card, Bicol University Polangui, Cum Laude, GWA 1.72">
+              <div class="debit-card-top">
+                <div class="debit-chip"></div>
+                <span class="debit-brand">BU · IS</span>
+              </div>
+              <div class="debit-card-number">1.72<span class="debit-card-number-label">GWA</span></div>
+              <div class="debit-honors">
+                <span class="debit-honor">Cum Laude</span>
+                <span class="debit-honor">Best Undergraduate Thesis</span>
+                <span class="debit-honor">Dean's Lister '21–'22, '24–'25</span>
+              </div>
+              <div class="debit-card-bottom">
+                <div>
+                  <div class="debit-label">Program</div>
+                  <div class="debit-name">BS Information Systems</div>
+                </div>
+                <div style="text-align:right;">
+                  <div class="debit-label">Valid</div>
+                  <div class="debit-expiry">2021–2025</div>
+                </div>
+              </div>
+              <div class="debit-card-footer">
+                <span>Bicol University Polangui</span>
+              </div>
+            </div>
+          </div>
+        </div>
       </div>
     </div>
   </section>
@@ -754,7 +1049,7 @@
 </div>
 
 <script>
-  // ---- Theme toggle (in-memory, respects system preference on load) ----
+  // ---- Theme toggle ----
   const root = document.documentElement;
   const themeBtn = document.getElementById('themeToggle');
   const iconSun = document.getElementById('iconSun');
@@ -770,40 +1065,21 @@
 
   function toggleThemeAt(x, y){
     const goingDark = !root.classList.contains('dark');
-
-    // Fallback for browsers without the View Transitions API
-    if(!document.startViewTransition || (window.matchMedia && window.matchMedia('(prefers-reduced-motion: reduce)').matches)){
-      setTheme(goingDark);
-      return;
+    if(!document.startViewTransition || window.matchMedia('(prefers-reduced-motion: reduce)').matches){
+      setTheme(goingDark); return;
     }
-
     const transition = document.startViewTransition(() => setTheme(goingDark));
     transition.ready.then(() => {
-      const endRadius = Math.hypot(
-        Math.max(x, window.innerWidth - x),
-        Math.max(y, window.innerHeight - y)
-      );
+      const endRadius = Math.hypot(Math.max(x, innerWidth - x), Math.max(y, innerHeight - y));
       root.animate(
-        {
-          clipPath: [
-            `circle(0px at ${x}px ${y}px)`,
-            `circle(${endRadius}px at ${x}px ${y}px)`
-          ]
-        },
-        {
-          duration: 650,
-          easing: 'cubic-bezier(.65,0,.35,1)',
-          pseudoElement: '::view-transition-new(root)'
-        }
+        { clipPath: [`circle(0px at ${x}px ${y}px)`, `circle(${endRadius}px at ${x}px ${y}px)`] },
+        { duration:650, easing:'cubic-bezier(.65,0,.35,1)', pseudoElement:'::view-transition-new(root)' }
       );
     });
   }
-
   themeBtn.addEventListener('click', (e) => {
-    const rect = themeBtn.getBoundingClientRect();
-    const x = rect.left + rect.width / 2;
-    const y = rect.top + rect.height / 2;
-    toggleThemeAt(x, y);
+    const r = themeBtn.getBoundingClientRect();
+    toggleThemeAt(r.left + r.width / 2, r.top + r.height / 2);
   });
 
   // ---- Mobile menu ----
@@ -812,7 +1088,7 @@
   menuToggle.addEventListener('click', () => navlinks.classList.toggle('open'));
   navlinks.querySelectorAll('a').forEach(a => a.addEventListener('click', () => navlinks.classList.remove('open')));
 
-  // ---- Active nav link on scroll ----
+  // ---- Active nav + header CTA ----
   const sections = ['experience','skills','projects','education','contact'].map(id => document.getElementById(id));
   const navA = document.querySelectorAll('[data-nav]');
   const headerCta = document.getElementById('ctaHeader');
@@ -820,113 +1096,129 @@
 
   const io = new IntersectionObserver((entries) => {
     entries.forEach(entry => {
-      if(entry.isIntersecting){
+      if(entry.isIntersecting)
         navA.forEach(a => a.classList.toggle('active', a.getAttribute('href') === '#' + entry.target.id));
-      }
     });
-  }, { rootMargin: '-45% 0px -50% 0px', threshold: 0 });
+  }, { rootMargin:'-45% 0px -50% 0px', threshold:0 });
   sections.forEach(s => s && io.observe(s));
 
   const heroIo = new IntersectionObserver((entries) => {
     entries.forEach(entry => { headerCta.style.display = entry.isIntersecting ? 'none' : 'inline-flex'; });
-  }, { threshold: 0 });
+  }, { threshold:0 });
   heroIo.observe(hero);
 
-  // ---- Scroll reveal animations (Apple-style fade + rise, staggered within groups) ----
+  // ---- Scroll reveal ----
   (function initReveal(){
-    const staggerGroups = [
-      '.exp-list-wrap .exp-card',
-      '.skill-grid .skill-card',
-      '.proj-grid .proj-card',
-      '.cert-list .cert-item'
-    ];
-    staggerGroups.forEach(sel => {
-      document.querySelectorAll(sel).forEach((el, i) => {
-        el.style.transitionDelay = (i * 0.09) + 's';
-      });
-    });
+    ['.exp-list-wrap .exp-card','.skill-grid .skill-card','.proj-grid .proj-card','.cert-list .cert-item']
+      .forEach(sel => document.querySelectorAll(sel).forEach((el,i) => el.style.transitionDelay = (i*.09)+'s'));
 
-    const revealEls = document.querySelectorAll('.reveal');
     const revealIo = new IntersectionObserver((entries) => {
       entries.forEach(entry => {
-        if(entry.isIntersecting){
-          entry.target.classList.add('in-view');
-          revealIo.unobserve(entry.target);
-        }
+        if(entry.isIntersecting){ entry.target.classList.add('in-view'); revealIo.unobserve(entry.target); }
       });
-    }, { threshold: 0.15, rootMargin: '0px 0px -80px 0px' });
-
-    revealEls.forEach(el => revealIo.observe(el));
+    }, { threshold:0.15, rootMargin:'0px 0px -80px 0px' });
+    document.querySelectorAll('.reveal').forEach(el => revealIo.observe(el));
   })();
 
-  // ---- Typewriter console (real character-by-character typing) ----
+  // ---- Apple Card 3-D tilt micro-interaction ----
+  (function initCardTilt(){
+    const card = document.getElementById('appleCard');
+    if(!card) return;
+    if(window.matchMedia('(prefers-reduced-motion: reduce)').matches) return;
+
+    const MAX_TILT = 14; // degrees
+    const GLOSS_STRENGTH = 0.28;
+
+    function applyTilt(rx, ry, gloss){
+      card.classList.add('tilting');
+      card.style.transform = `rotateX(${rx}deg) rotateY(${ry}deg) scale(1.025)`;
+      card.style.boxShadow = `
+        0 0 0 1px hsl(var(--background) / .14),
+        0 4px 8px  -2px hsl(var(--foreground) / .32),
+        ${-ry * .8}px ${rx * .8}px 32px -8px hsl(var(--foreground) / .38),
+        0 32px 64px -20px hsl(var(--foreground) / .44),
+        inset 0 1px 0 hsl(var(--background) / .22),
+        inset 0 -1px 0 hsl(0 0% 0% / .18)
+      `;
+      // Shift the gloss overlay via a CSS custom property
+      card.style.setProperty('--gloss-x', (50 + gloss.x * 100) + '%');
+      card.style.setProperty('--gloss-y', (50 + gloss.y * 100) + '%');
+    }
+
+    function resetTilt(){
+      card.classList.remove('tilting');
+      card.style.transform = '';
+      card.style.boxShadow = '';
+      card.style.removeProperty('--gloss-x');
+      card.style.removeProperty('--gloss-y');
+    }
+
+    card.addEventListener('mousemove', (e) => {
+      const rect = card.getBoundingClientRect();
+      const cx = rect.left + rect.width  / 2;
+      const cy = rect.top  + rect.height / 2;
+      const dx = (e.clientX - cx) / (rect.width  / 2); // -1 → 1
+      const dy = (e.clientY - cy) / (rect.height / 2); // -1 → 1
+
+      const rx = -dy * MAX_TILT;  // tilt around X axis
+      const ry =  dx * MAX_TILT;  // tilt around Y axis
+
+      applyTilt(rx, ry, { x: dx * GLOSS_STRENGTH, y: dy * GLOSS_STRENGTH });
+    });
+
+    card.addEventListener('mouseleave', resetTilt);
+
+    // Touch support
+    card.addEventListener('touchmove', (e) => {
+      const touch = e.touches[0];
+      const rect  = card.getBoundingClientRect();
+      const cx = rect.left + rect.width  / 2;
+      const cy = rect.top  + rect.height / 2;
+      const dx = Math.max(-1, Math.min(1, (touch.clientX - cx) / (rect.width  / 2)));
+      const dy = Math.max(-1, Math.min(1, (touch.clientY - cy) / (rect.height / 2)));
+      applyTilt(-dy * MAX_TILT * .6, dx * MAX_TILT * .6, { x: dx * GLOSS_STRENGTH, y: dy * GLOSS_STRENGTH });
+    }, { passive: true });
+    card.addEventListener('touchend', resetTilt);
+  })();
+
+  // ---- Typewriter console ----
   const queryLinesData = [
     {
-      text: "SELECT name, role, based_in, focus, degree",
-      html: '<span class="c-kw">SELECT</span> <span class="c-col">name</span>, <span class="c-col">role</span>, <span class="c-col">based_in</span>, <span class="c-col">focus</span>, <span class="c-col">degree</span>'
+      text:"SELECT name, role, based_in, focus, degree",
+      html:'<span class="c-kw">SELECT</span> <span class="c-col">name</span>, <span class="c-col">role</span>, <span class="c-col">based_in</span>, <span class="c-col">focus</span>, <span class="c-col">degree</span>'
     },
     {
-      text: "FROM professionals",
-      html: '<span class="c-kw">FROM</span> <span class="c-fn">professionals</span>'
+      text:"FROM professionals",
+      html:'<span class="c-kw">FROM</span> <span class="c-fn">professionals</span>'
     },
     {
-      text: "WHERE id = 'ken_joshua';",
-      html: '<span class="c-kw">WHERE</span> id = <span class="c-str">\'ken_joshua\'</span>;'
+      text:"WHERE id = 'ken_joshua';",
+      html:'<span class="c-kw">WHERE</span> id = <span class="c-str">\'ken_joshua\'</span>;'
     },
   ];
   const queryPlainText = "SELECT name, role, based_in, focus, degree\nFROM professionals\nWHERE id = 'ken_joshua';";
 
-  const body = document.getElementById('consoleBody');
-  const lineNums = document.getElementById('consoleLines');
-  const resultWrap = document.getElementById('resultWrap');
-  const footerMeta = document.getElementById('footerMeta');
-
+  const body    = document.getElementById('consoleBody');
+  const lineNums= document.getElementById('consoleLines');
+  const resultWrap= document.getElementById('resultWrap');
+  const footerMeta= document.getElementById('footerMeta');
   let li = 0;
 
   function finishTyping(){
-    const c = document.createElement('span');
-    c.className = 'caret';
-    body.appendChild(c);
-    setTimeout(() => {
-      c.remove();
-      resultWrap.classList.add('show');
-      footerMeta.textContent = '5 rows · 12 ms';
-    }, 450);
+    const c = document.createElement('span'); c.className='caret'; body.appendChild(c);
+    setTimeout(() => { c.remove(); resultWrap.classList.add('show'); footerMeta.textContent='5 rows · 12 ms'; }, 450);
   }
-
   function typeLine(){
-    if(li >= queryLinesData.length){
-      finishTyping();
-      return;
-    }
-
-    const numDiv = document.createElement('div');
-    numDiv.textContent = li + 1;
-    lineNums.appendChild(numDiv);
-
+    if(li >= queryLinesData.length){ finishTyping(); return; }
+    const numDiv = document.createElement('div'); numDiv.textContent = li+1; lineNums.appendChild(numDiv);
     const lineDiv = document.createElement('div');
     const textSpan = document.createElement('span');
-    const caret = document.createElement('span');
-    caret.className = 'caret';
-    lineDiv.appendChild(textSpan);
-    lineDiv.appendChild(caret);
-    body.appendChild(lineDiv);
-
-    const fullText = queryLinesData[li].text;
-    let ci = 0;
-
+    const caret = document.createElement('span'); caret.className='caret';
+    lineDiv.appendChild(textSpan); lineDiv.appendChild(caret); body.appendChild(lineDiv);
+    const fullText = queryLinesData[li].text; let ci = 0;
     function typeChar(){
-      if(ci <= fullText.length){
-        textSpan.textContent = fullText.slice(0, ci);
-        ci++;
-        // slight human-like jitter in typing speed
-        setTimeout(typeChar, 16 + Math.random() * 26);
-      } else {
-        // swap plain text for syntax-highlighted markup once the line is complete
-        lineDiv.innerHTML = queryLinesData[li].html;
-        li++;
-        setTimeout(typeLine, 220);
-      }
+      if(ci <= fullText.length){ textSpan.textContent = fullText.slice(0,ci); ci++; setTimeout(typeChar, 16+Math.random()*26); }
+      else { lineDiv.innerHTML = queryLinesData[li].html; li++; setTimeout(typeLine, 220); }
     }
     typeChar();
   }
@@ -936,39 +1228,34 @@
   const copyBtn = document.getElementById('copyBtn');
   const copyLabel = document.getElementById('copyLabel');
   copyBtn.addEventListener('click', async () => {
-    try{
-      await navigator.clipboard.writeText(queryPlainText);
-      copyLabel.textContent = 'Copied';
-      setTimeout(() => { copyLabel.textContent = 'Copy'; }, 1500);
-    }catch(e){
-      copyLabel.textContent = 'Select & copy';
-      setTimeout(() => { copyLabel.textContent = 'Copy'; }, 1500);
-    }
+    try{ await navigator.clipboard.writeText(queryPlainText); copyLabel.textContent='Copied'; }
+    catch(e){ copyLabel.textContent='Select & copy'; }
+    setTimeout(() => { copyLabel.textContent='Copy'; }, 1500);
   });
-  // ---- Project galleries (swap these URLs for your real screenshots) ----
-  const EYE_ICON = '<svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M1 12s4-7 11-7 11 7 11 7-4 7-11 7-11-7-11-7Z"/><circle cx="12" cy="12" r="3"/></svg>';
 
+  // ---- Project galleries ----
+  const EYE_ICON = '<svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M1 12s4-7 11-7 11 7 11 7-4 7-11 7-11-7-11-7Z"/><circle cx="12" cy="12" r="3"/></svg>';
   const projects = {
-    ordertracker: {
-      title: 'Order Tracking System',
-      images: [
+    ordertracker:{
+      title:'Order Tracking System',
+      images:[
         'https://placehold.co/1200x750/1a1a1a/ffffff?text=Dashboard+View&font=jetbrains-mono',
         'https://placehold.co/1200x750/2a2a2a/ffffff?text=Order+Detail&font=jetbrains-mono',
         'https://placehold.co/1200x750/3a3a3a/ffffff?text=Supplier+Tags&font=jetbrains-mono',
         'https://placehold.co/1200x750/1a1a1a/ffffff?text=XLSX+Export&font=jetbrains-mono',
       ],
     },
-    recordfiles: {
-      title: 'Record Files Management System',
-      images: [
+    recordfiles:{
+      title:'Record Files Management System',
+      images:[
         'https://placehold.co/1200x750/222222/ffffff?text=Shelf+Navigator&font=jetbrains-mono',
         'https://placehold.co/1200x750/333333/ffffff?text=Record+Search&font=jetbrains-mono',
         'https://placehold.co/1200x750/444444/ffffff?text=Audit+Log&font=jetbrains-mono',
       ],
     },
-    albay: {
-      title: 'Albay Dialect Dictionary',
-      images: [
+    albay:{
+      title:'Albay Dialect Dictionary',
+      images:[
         'https://placehold.co/1200x750/242424/ffffff?text=Dictionary+Home&font=jetbrains-mono',
         'https://placehold.co/1200x750/303030/ffffff?text=Word+Entry&font=jetbrains-mono',
         'https://placehold.co/1200x750/3c3c3c/ffffff?text=Category+Browser&font=jetbrains-mono',
@@ -977,9 +1264,9 @@
         'https://placehold.co/1200x750/3c3c3c/ffffff?text=Search+Results&font=jetbrains-mono',
       ],
     },
-    cookie: {
-      title: 'Cookie Ordering System',
-      images: [
+    cookie:{
+      title:'Cookie Ordering System',
+      images:[
         'https://placehold.co/1200x750/1e1e1e/ffffff?text=Storefront&font=jetbrains-mono',
         'https://placehold.co/1200x750/2c2c2c/ffffff?text=Chart.js+Dashboard&font=jetbrains-mono',
         'https://placehold.co/1200x750/3a3a3a/ffffff?text=Order+Summary&font=jetbrains-mono',
@@ -987,69 +1274,51 @@
     },
   };
 
-  // Render each small thumbnail strip
   document.querySelectorAll('.proj-gallery').forEach(galleryEl => {
     const key = galleryEl.getAttribute('data-project');
-    const proj = projects[key];
-    if(!proj) return;
+    const proj = projects[key]; if(!proj) return;
     proj.images.forEach((src, idx) => {
       const btn = document.createElement('button');
-      btn.className = 'proj-thumb-sm';
-      btn.type = 'button';
-      btn.setAttribute('aria-label', `View ${proj.title} screenshot ${idx + 1}`);
-      btn.innerHTML = `<img src="${src}" alt="${proj.title} screenshot ${idx + 1}" loading="lazy"><span class="proj-thumb-eye">${EYE_ICON}</span>`;
+      btn.className='proj-thumb-sm'; btn.type='button';
+      btn.setAttribute('aria-label', `View ${proj.title} screenshot ${idx+1}`);
+      btn.innerHTML=`<img src="${src}" alt="${proj.title} screenshot ${idx+1}" loading="lazy"><span class="proj-thumb-eye">${EYE_ICON}</span>`;
       btn.addEventListener('click', () => openGallery(key, idx));
       galleryEl.appendChild(btn);
     });
   });
 
-  // ---- Modal with prev/next navigation ----
-  const modalOverlay = document.getElementById('modalOverlay');
-  const modalImg = document.getElementById('modalImg');
-  const modalTitle = document.getElementById('modalTitle');
-  const modalCounter = document.getElementById('modalCounter');
-  const modalClose = document.getElementById('modalClose');
-  const modalPrev = document.getElementById('modalPrev');
-  const modalNext = document.getElementById('modalNext');
-
-  let currentKey = null;
-  let currentIndex = 0;
+  // ---- Modal ----
+  const modalOverlay=document.getElementById('modalOverlay');
+  const modalImg=document.getElementById('modalImg');
+  const modalTitle=document.getElementById('modalTitle');
+  const modalCounter=document.getElementById('modalCounter');
+  const modalClose=document.getElementById('modalClose');
+  const modalPrev=document.getElementById('modalPrev');
+  const modalNext=document.getElementById('modalNext');
+  let currentKey=null, currentIndex=0;
 
   function renderModal(){
-    const proj = projects[currentKey];
-    modalImg.src = proj.images[currentIndex];
-    modalImg.alt = `${proj.title} screenshot ${currentIndex + 1}`;
-    modalTitle.textContent = proj.title;
-    modalCounter.textContent = `${currentIndex + 1} / ${proj.images.length}`;
-    const multi = proj.images.length > 1;
-    modalPrev.style.display = multi ? 'flex' : 'none';
-    modalNext.style.display = multi ? 'flex' : 'none';
+    const proj=projects[currentKey];
+    modalImg.src=proj.images[currentIndex];
+    modalImg.alt=`${proj.title} screenshot ${currentIndex+1}`;
+    modalTitle.textContent=proj.title;
+    modalCounter.textContent=`${currentIndex+1} / ${proj.images.length}`;
+    const multi=proj.images.length>1;
+    modalPrev.style.display=multi?'flex':'none';
+    modalNext.style.display=multi?'flex':'none';
   }
-  function openGallery(key, idx){
-    currentKey = key;
-    currentIndex = idx;
-    renderModal();
-    modalOverlay.classList.add('show');
-    document.body.style.overflow = 'hidden';
-  }
-  function closeProjectModal(){
-    modalOverlay.classList.remove('show');
-    document.body.style.overflow = '';
-  }
-  function stepModal(delta){
-    const proj = projects[currentKey];
-    currentIndex = (currentIndex + delta + proj.images.length) % proj.images.length;
-    renderModal();
-  }
-  modalOverlay.addEventListener('click', (e) => { if(e.target === modalOverlay) closeProjectModal(); });
-  modalClose.addEventListener('click', closeProjectModal);
-  modalPrev.addEventListener('click', () => stepModal(-1));
-  modalNext.addEventListener('click', () => stepModal(1));
-  document.addEventListener('keydown', (e) => {
+  function openGallery(key,idx){ currentKey=key; currentIndex=idx; renderModal(); modalOverlay.classList.add('show'); document.body.style.overflow='hidden'; }
+  function closeProjectModal(){ modalOverlay.classList.remove('show'); document.body.style.overflow=''; }
+  function stepModal(delta){ const proj=projects[currentKey]; currentIndex=(currentIndex+delta+proj.images.length)%proj.images.length; renderModal(); }
+  modalOverlay.addEventListener('click',(e)=>{ if(e.target===modalOverlay) closeProjectModal(); });
+  modalClose.addEventListener('click',closeProjectModal);
+  modalPrev.addEventListener('click',()=>stepModal(-1));
+  modalNext.addEventListener('click',()=>stepModal(1));
+  document.addEventListener('keydown',(e)=>{
     if(!modalOverlay.classList.contains('show')) return;
-    if(e.key === 'Escape') closeProjectModal();
-    if(e.key === 'ArrowLeft') stepModal(-1);
-    if(e.key === 'ArrowRight') stepModal(1);
+    if(e.key==='Escape') closeProjectModal();
+    if(e.key==='ArrowLeft') stepModal(-1);
+    if(e.key==='ArrowRight') stepModal(1);
   });
 </script>
 </body>
