@@ -313,198 +313,232 @@
   .modal-next{right:12px;}
 
   /* ============================================================
-     EDUCATION — Apple Card Redesign
-     All colors derived from CSS variables only.
+     EDUCATION — Premium Metal Card
+     Cursor-tracked specular reflection + brushed-metal finish.
+     Every color reference uses existing CSS variables only.
      ============================================================ */
 
   .edu-grid{display:grid;grid-template-columns:3fr 2fr;gap:40px;align-items:start;}
   .edu-col{min-width:0;}
 
-  /* ---- Card wrapper: perspective container for 3-D tilt ---- */
+  /* ---- Perspective scene ---- */
   .apple-card-scene{
-    perspective: 900px;
+    perspective: 1000px;
+    perspective-origin: 50% 40%;
     width: 100%;
   }
 
-  /* ---- The card itself ---- */
+  /* ---- Card shell ---- */
   .debit-card{
     position: relative;
     width: 100%;
-    aspect-ratio: 1.586 / 1;   /* ISO 7810 ID-1 ratio */
-    border-radius: 20px;
+    aspect-ratio: 1.586 / 1;
+    border-radius: 18px;
     padding: 22px 24px;
     display: flex;
     flex-direction: column;
     justify-content: space-between;
-    gap: 0;
     overflow: hidden;
     cursor: default;
     user-select: none;
+    isolation: isolate;
 
-    /* Titanium finish: layered gradients over the foreground variable */
+    /*
+      Base metal:  a smooth dark-to-mid ramp using only the foreground variable.
+      The key insight: we use the *same hue* at different lightness steps
+      by chaining opacity against the foreground (dark in light mode, light in dark mode).
+      This means the card always reads as "metallic" regardless of theme.
+      Three stops: deep flank → satin face → lifted corner.
+    */
     background:
-      /* top-left gloss wash */
-      radial-gradient(
-        ellipse 70% 55% at 25% 18%,
-        hsl(var(--background) / .13) 0%,
-        transparent 70%
-      ),
-      /* horizontal brushed-metal bands */
+      /* Fine-pitch horizontal brushed-metal lines — 2 px repeat, softer than before */
       repeating-linear-gradient(
         180deg,
-        hsl(var(--background) / .04) 0px,
-        hsl(var(--background) / .0)  2px,
-        hsl(var(--background) / .03) 4px,
-        hsl(var(--background) / .0)  6px
+        hsl(var(--background) / .055) 0px,
+        hsl(var(--background) / .000) 1px,
+        hsl(var(--background) / .030) 2px,
+        hsl(var(--background) / .000) 3px
       ),
-      /* base titanium ramp */
+      /* Subtle diagonal sheen — gives the satin "grain angle" of brushed steel */
+      repeating-linear-gradient(
+        108deg,
+        hsl(var(--background) / .06) 0px,
+        hsl(var(--background) / .00) 3px,
+        hsl(var(--background) / .04) 6px,
+        hsl(var(--background) / .00) 9px
+      ),
+      /* Main metal ramp: smooth, no opacity banding */
       linear-gradient(
-        148deg,
-        hsl(var(--foreground) / .98)  0%,
-        hsl(var(--foreground) / .91) 38%,
-        hsl(var(--foreground) / .83) 62%,
-        hsl(var(--muted-foreground) / .6) 88%,
-        hsl(var(--muted-foreground) / .45) 100%
+        158deg,
+        hsl(var(--foreground) / .96)  0%,
+        hsl(var(--foreground) / .92) 22%,
+        hsl(var(--foreground) / .88) 48%,
+        hsl(var(--foreground) / .82) 72%,
+        hsl(var(--foreground) / .76) 88%,
+        hsl(var(--muted-foreground) / .68) 100%
       );
 
     color: hsl(var(--background));
 
-    /* Ring + depth shadow */
+    /* Resting shadow: layered depth, no directional offset yet */
     box-shadow:
-      0 0 0 1px hsl(var(--background) / .12),          /* inner rim */
-      0 2px  4px -2px hsl(var(--foreground) / .30),
-      0 8px 18px -8px hsl(var(--foreground) / .32),
-      0 24px 52px -18px hsl(var(--foreground) / .38),
-      inset 0 1px 0 hsl(var(--background) / .18),       /* top highlight */
-      inset 0 -1px 0 hsl(0 0% 0% / .14);               /* bottom depth */
+      /* Top edge catch-light */
+      inset 0 1px 0 hsl(var(--background) / .20),
+      /* Bottom edge depth */
+      inset 0 -1px 0 hsl(0 0% 0% / .16),
+      /* Side rim */
+      inset 0 0 0 1px hsl(var(--background) / .10),
+      /* Near shadow */
+      0 2px 6px -1px hsl(var(--foreground) / .22),
+      /* Mid shadow */
+      0 8px 20px -6px hsl(var(--foreground) / .28),
+      /* Atmospheric bloom */
+      0 28px 56px -16px hsl(var(--foreground) / .32);
 
-    /* Smooth tilt transition when mouse leaves */
+    /*
+      Spring-back on mouse leave: fast transform, slightly slower shadow.
+      During mousemove we override transition to `none` via JS for zero lag.
+    */
     transition:
-      transform 0.06s ease-out,
-      box-shadow 0.3s ease;
+      transform 0.55s cubic-bezier(0.23, 1, 0.32, 1),
+      box-shadow 0.55s cubic-bezier(0.23, 1, 0.32, 1);
 
     will-change: transform;
     transform-style: preserve-3d;
   }
 
-  /* Tilt-active state — controlled by JS */
-  .debit-card.tilting{
-    transition: none; /* instant during mouse move */
-  }
-
-  /* ---- Gloss stripe ---- */
+  /*
+    Specular highlight layer — this is the key upgrade.
+    A radial-gradient is positioned using --mx/--my (cursor 0–1 fractions),
+    set by JS on every mousemove. At rest it sits top-left.
+    The gradient simulates a point light source moving with the cursor.
+  */
   .debit-card::before{
     content: '';
     position: absolute;
     inset: 0;
     border-radius: inherit;
-    background: linear-gradient(
-      122deg,
-      hsl(var(--background) / .22)  0%,
-      hsl(var(--background) / .09) 28%,
-      transparent 52%
+    /* Specular hotspot: tight bright center, smooth wide falloff */
+    background: radial-gradient(
+      ellipse 65% 55% at calc(var(--mx, 28) * 1%) calc(var(--my, 22) * 1%),
+      hsl(var(--background) / .28) 0%,
+      hsl(var(--background) / .12) 30%,
+      hsl(var(--background) / .04) 60%,
+      transparent 80%
     );
     pointer-events: none;
     z-index: 1;
+    /* Mirror the transition so the light sweeps smoothly on leave */
+    transition: background 0.55s cubic-bezier(0.23, 1, 0.32, 1);
+  }
+  .debit-card.card-active::before{
+    transition: none; /* instant during tracking */
   }
 
-  /* ---- Edge micro-bevel (inset ring) ---- */
+  /*
+    Edge bevel — polished perimeter ring.
+    Uses a box-shadow instead of border so it layers over the background.
+  */
   .debit-card::after{
     content: '';
     position: absolute;
     inset: 0;
     border-radius: inherit;
-    box-shadow: inset 0 0 0 1px hsl(var(--background) / .16);
+    box-shadow:
+      inset 0 0 0 1px hsl(var(--background) / .18),
+      inset 1px 1px 0 hsl(var(--background) / .10);
     pointer-events: none;
-    z-index: 2;
+    z-index: 4; /* above all content so the rim is always crisp */
   }
 
-  /* All content layers sit above the pseudo-elements */
+  /* Content sits above base layers but below the rim */
   .debit-card > *{ position: relative; z-index: 3; }
 
-  /* ---- Top row: chip + brand ---- */
+  /* ---- Top row ---- */
   .debit-card-top{
     display: flex;
     align-items: center;
     justify-content: space-between;
   }
 
-  /* EMV chip — gold contact pads */
+  /* ---- EMV chip — polished gold ---- */
   .debit-chip{
     width: 36px;
     height: 28px;
     border-radius: 5px;
+    /*
+      Gold chip: this is a real-world physical detail that must be warm gold.
+      The values here are intentionally not from CSS variables because a gold chip
+      in dark mode is still gold — it's a physical object.
+    */
     background: linear-gradient(
-      145deg,
-      hsl(45 70% 72%)  0%,
-      hsl(42 60% 58%) 40%,
-      hsl(45 65% 68%) 65%,
-      hsl(40 55% 50%) 100%
+      148deg,
+      hsl(46 72% 76%) 0%,
+      hsl(43 62% 60%) 30%,
+      hsl(46 68% 70%) 55%,
+      hsl(42 58% 54%) 78%,
+      hsl(45 65% 63%) 100%
     );
     box-shadow:
-      0 1px 3px hsl(0 0% 0% / .28),
-      inset 0 1px 0 hsl(45 80% 85% / .6);
+      0 1px 0 hsl(46 80% 88% / .5),
+      0 2px 5px hsl(0 0% 0% / .32),
+      inset 0 1px 0 hsl(48 82% 90% / .55),
+      inset 0 -1px 0 hsl(40 50% 40% / .25);
     position: relative;
     overflow: hidden;
   }
 
-  /* Contact pad grid */
+  /* Contact pad grid engraving */
   .debit-chip::before{
     content: '';
     position: absolute;
     inset: 4px 5px;
+    border-radius: 2px;
     background:
-      /* vertical dividers */
       repeating-linear-gradient(
         90deg,
-        transparent 0px, transparent 9px,
-        hsl(40 50% 40% / .35) 9px, hsl(40 50% 40% / .35) 10px
+        transparent 0px,
+        transparent 8px,
+        hsl(40 45% 35% / .30) 8px,
+        hsl(40 45% 35% / .30) 9px
       ),
-      /* horizontal dividers */
       repeating-linear-gradient(
         180deg,
-        transparent 0px, transparent 7px,
-        hsl(40 50% 40% / .35) 7px, hsl(40 50% 40% / .35) 8px
+        transparent 0px,
+        transparent 6px,
+        hsl(40 45% 35% / .30) 6px,
+        hsl(40 45% 35% / .30) 7px
       );
-    border-radius: 2px;
   }
 
-  /* NFC antenna arc */
-  .debit-chip::after{
-    content: '';
-    position: absolute;
-    right: -14px;
-    top: 50%;
-    transform: translateY(-50%);
-    width: 22px;
-    height: 22px;
-    border-radius: 50%;
-    border: 1.5px solid hsl(var(--background) / .22);
-    box-shadow:
-      4px 0 0 -1px hsl(var(--background) / .14),
-      8px 0 0 -2px hsl(var(--background) / .09);
-  }
+  /* NFC ring removed */
+  .debit-chip::after{ content: none; }
 
+  /* ---- Brand mark ---- */
   .debit-brand{
     font-family: 'JetBrains Mono', monospace;
     font-weight: 700;
-    font-size: 12px;
-    letter-spacing: .1em;
-    opacity: .7;
+    font-size: 11.5px;
+    letter-spacing: .12em;
+    opacity: .65;
     text-transform: uppercase;
   }
 
-  /* ---- GWA / number block ---- */
+  /* ---- GWA display number ---- */
   .debit-card-number{
     font-family: 'JetBrains Mono', monospace;
     font-size: 36px;
     font-weight: 700;
-    letter-spacing: .01em;
+    letter-spacing: .02em;
     line-height: 1;
-    /* Subtle emboss: light top, shadow bottom */
+    /*
+      Emboss: brighter above (as if light hits the raised surface),
+      darker below (the undercut shadow).
+    */
     text-shadow:
-      0 1px 0 hsl(var(--background) / .18),
-      0 -1px 0 hsl(0 0% 0% / .18);
+      0  1px 0 hsl(var(--background) / .22),
+      0 -1px 0 hsl(0 0% 0% / .20),
+      0  2px 6px hsl(0 0% 0% / .08);
   }
 
   .debit-card-number-label{
@@ -513,17 +547,16 @@
     font-weight: 700;
     text-transform: uppercase;
     letter-spacing: .1em;
-    opacity: .52;
-    margin-left: 7px;
+    opacity: .48;
+    margin-left: 8px;
     vertical-align: middle;
   }
 
-  /* ---- Honors pill row ---- */
+  /* ---- Honor pills ---- */
   .debit-honors{
     display: flex;
     flex-wrap: wrap;
     gap: 5px;
-    margin-top: -4px;
   }
 
   .debit-honor{
@@ -531,23 +564,20 @@
     font-weight: 600;
     letter-spacing: .03em;
     white-space: nowrap;
-    padding: 4px 9px;
+    padding: 4px 10px;
     border-radius: 999px;
-    /* Frosted glass pill */
-    background: hsl(var(--background) / .13);
-    border: 1px solid hsl(var(--background) / .22);
+    background: hsl(var(--background) / .12);
+    border: 1px solid hsl(var(--background) / .20);
     color: hsl(var(--background));
-    backdrop-filter: blur(4px);
-    /* Subtle lift on hover */
-    transition: background .18s ease, border-color .18s ease;
+    transition: background 0.2s ease, border-color 0.2s ease;
   }
 
   .debit-card:hover .debit-honor{
-    background: hsl(var(--background) / .18);
-    border-color: hsl(var(--background) / .32);
+    background: hsl(var(--background) / .17);
+    border-color: hsl(var(--background) / .28);
   }
 
-  /* ---- Bottom meta row ---- */
+  /* ---- Bottom meta ---- */
   .debit-card-bottom{
     display: flex;
     justify-content: space-between;
@@ -556,10 +586,10 @@
   }
 
   .debit-label{
-    font-size: 8.5px;
+    font-size: 8px;
     text-transform: uppercase;
-    letter-spacing: .1em;
-    opacity: .48;
+    letter-spacing: .11em;
+    opacity: .46;
     margin-bottom: 3px;
     font-family: 'Inter', sans-serif;
     font-weight: 600;
@@ -569,14 +599,14 @@
     font-size: 13px;
     font-weight: 600;
     letter-spacing: .01em;
-    opacity: .92;
+    opacity: .90;
   }
 
   .debit-expiry{
     font-family: 'JetBrains Mono', monospace;
     font-size: 12px;
     font-weight: 600;
-    opacity: .88;
+    opacity: .86;
   }
 
   /* ---- Footer strip ---- */
@@ -584,14 +614,13 @@
     display: flex;
     justify-content: space-between;
     gap: 10px;
-    font-size: 9.5px;
-    opacity: .52;
+    font-size: 9px;
+    opacity: .48;
     padding-top: 10px;
-    margin-top: 0;
-    border-top: 1px solid hsl(var(--background) / .18);
+    border-top: 1px solid hsl(var(--background) / .15);
     font-family: 'Inter', sans-serif;
     font-weight: 500;
-    letter-spacing: .02em;
+    letter-spacing: .025em;
   }
 
   /* ---- Certifications column ---- */
@@ -1120,65 +1149,157 @@
     document.querySelectorAll('.reveal').forEach(el => revealIo.observe(el));
   })();
 
-  // ---- Apple Card 3-D tilt micro-interaction ----
+  // ---- Metal card: cursor-tracked specular reflection + 3-D tilt ----
   (function initCardTilt(){
     const card = document.getElementById('appleCard');
     if(!card) return;
     if(window.matchMedia('(prefers-reduced-motion: reduce)').matches) return;
 
-    const MAX_TILT = 14; // degrees
-    const GLOSS_STRENGTH = 0.28;
+    const MAX_TILT   = 12;   // degrees — refined down from 14 for a more premium feel
+    const SPRING     = 0.12; // lerp factor for smooth continuous tracking
+    const MIN_TRANSITION_MS = 4; // nearly instant during tracking
 
-    function applyTilt(rx, ry, gloss){
-      card.classList.add('tilting');
-      card.style.transform = `rotateX(${rx}deg) rotateY(${ry}deg) scale(1.025)`;
-      card.style.boxShadow = `
-        0 0 0 1px hsl(var(--background) / .14),
-        0 4px 8px  -2px hsl(var(--foreground) / .32),
-        ${-ry * .8}px ${rx * .8}px 32px -8px hsl(var(--foreground) / .38),
-        0 32px 64px -20px hsl(var(--foreground) / .44),
+    // Current animated state
+    let targetRx = 0, targetRy = 0;
+    let currentRx = 0, currentRy = 0;
+    let targetMx = 28, targetMy = 22; // specular hotspot %
+    let currentMx = 28, currentMy = 22;
+    let isHovering = false;
+    let rafId = null;
+
+    /*
+      Shadow generation: the cast shadow shifts in the opposite direction
+      of the tilt so the card appears to lift and lean over its shadow.
+      Two directional shadows: a near sharp one and a far diffuse one.
+    */
+    function buildShadow(rx, ry){
+      // ry positive → card leans right → shadow extends left
+      const ox = (-ry * 1.4).toFixed(2);
+      // rx positive → card tilts back top → shadow extends down
+      const oy = (rx * 1.0).toFixed(2);
+      const tiltMag = Math.sqrt(rx * rx + ry * ry) / MAX_TILT; // 0–1
+      const bloom   = (0.30 + tiltMag * 0.12).toFixed(3);
+      const lift    = (0.26 + tiltMag * 0.10).toFixed(3);
+      return `
         inset 0 1px 0 hsl(var(--background) / .22),
-        inset 0 -1px 0 hsl(0 0% 0% / .18)
+        inset 0 -1px 0 hsl(0 0% 0% / .18),
+        inset 0 0 0 1px hsl(var(--background) / .11),
+        0 2px 4px -1px hsl(var(--foreground) / .20),
+        ${ox}px ${oy}px 22px -4px hsl(var(--foreground) / ${lift}),
+        ${(ox * 1.6).toFixed(2)}px ${(oy * 1.6).toFixed(2)}px 52px -12px hsl(var(--foreground) / ${bloom}),
+        0 40px 80px -24px hsl(var(--foreground) / .22)
       `;
-      // Shift the gloss overlay via a CSS custom property
-      card.style.setProperty('--gloss-x', (50 + gloss.x * 100) + '%');
-      card.style.setProperty('--gloss-y', (50 + gloss.y * 100) + '%');
     }
 
-    function resetTilt(){
-      card.classList.remove('tilting');
-      card.style.transform = '';
-      card.style.boxShadow = '';
-      card.style.removeProperty('--gloss-x');
-      card.style.removeProperty('--gloss-y');
+    // Resting shadow (cursor off card)
+    const RESTING_SHADOW = `
+      inset 0 1px 0 hsl(var(--background) / .20),
+      inset 0 -1px 0 hsl(0 0% 0% / .16),
+      inset 0 0 0 1px hsl(var(--background) / .10),
+      0 2px 6px -1px hsl(var(--foreground) / .22),
+      0 8px 20px -6px hsl(var(--foreground) / .28),
+      0 28px 56px -16px hsl(var(--foreground) / .32)
+    `;
+
+    function lerp(a, b, t){ return a + (b - a) * t; }
+
+    function tick(){
+      if(!isHovering && Math.abs(currentRx) < 0.01 && Math.abs(currentRy) < 0.01){
+        // Fully settled at rest — stop the loop
+        currentRx = 0; currentRy = 0;
+        currentMx = 28; currentMy = 22;
+        card.style.transform  = '';
+        card.style.boxShadow  = RESTING_SHADOW;
+        card.style.setProperty('--mx', '28');
+        card.style.setProperty('--my', '22');
+        card.style.transition = `transform 0.55s cubic-bezier(0.23,1,0.32,1), box-shadow 0.55s cubic-bezier(0.23,1,0.32,1)`;
+        rafId = null;
+        return;
+      }
+
+      // Spring towards target
+      const sp = isHovering ? SPRING : SPRING * 0.65; // slower spring-back
+      currentRx = lerp(currentRx, targetRx, sp);
+      currentRy = lerp(currentRy, targetRy, sp);
+      currentMx = lerp(currentMx, targetMx, sp);
+      currentMy = lerp(currentMy, targetMy, sp);
+
+      const scale = isHovering ? 1.022 : 1;
+
+      card.style.transition = 'none';
+      card.style.transform  = `rotateX(${currentRx.toFixed(3)}deg) rotateY(${currentRy.toFixed(3)}deg) scale(${scale})`;
+      card.style.boxShadow  = buildShadow(currentRx, currentRy);
+      card.style.setProperty('--mx', currentMx.toFixed(2));
+      card.style.setProperty('--my', currentMy.toFixed(2));
+
+      rafId = requestAnimationFrame(tick);
     }
+
+    function startLoop(){
+      if(!rafId) rafId = requestAnimationFrame(tick);
+    }
+
+    card.addEventListener('mouseenter', () => {
+      isHovering = true;
+      card.classList.add('card-active');
+      startLoop();
+    });
 
     card.addEventListener('mousemove', (e) => {
       const rect = card.getBoundingClientRect();
-      const cx = rect.left + rect.width  / 2;
-      const cy = rect.top  + rect.height / 2;
-      const dx = (e.clientX - cx) / (rect.width  / 2); // -1 → 1
-      const dy = (e.clientY - cy) / (rect.height / 2); // -1 → 1
+      // Normalised cursor position: 0 at left/top → 1 at right/bottom
+      const nx = (e.clientX - rect.left)  / rect.width;   // 0–1
+      const ny = (e.clientY - rect.top)   / rect.height;  // 0–1
 
-      const rx = -dy * MAX_TILT;  // tilt around X axis
-      const ry =  dx * MAX_TILT;  // tilt around Y axis
+      // Tilt: centred, ±1
+      const dx = nx * 2 - 1;
+      const dy = ny * 2 - 1;
 
-      applyTilt(rx, ry, { x: dx * GLOSS_STRENGTH, y: dy * GLOSS_STRENGTH });
+      targetRy =  dx * MAX_TILT;
+      targetRx = -dy * MAX_TILT;
+
+      // Specular hotspot follows cursor directly (in 0–100 space for CSS)
+      // Slight exaggeration so the hotspot moves visibly
+      targetMx = nx * 100;
+      targetMy = ny * 100;
     });
 
-    card.addEventListener('mouseleave', resetTilt);
+    card.addEventListener('mouseleave', () => {
+      isHovering = false;
+      targetRx = 0;
+      targetRy = 0;
+      targetMx = 28;
+      targetMy = 22;
+      card.classList.remove('card-active');
+      startLoop(); // continue running until fully settled
+    });
 
-    // Touch support
+    // Touch support (reduced tilt)
     card.addEventListener('touchmove', (e) => {
       const touch = e.touches[0];
       const rect  = card.getBoundingClientRect();
-      const cx = rect.left + rect.width  / 2;
-      const cy = rect.top  + rect.height / 2;
-      const dx = Math.max(-1, Math.min(1, (touch.clientX - cx) / (rect.width  / 2)));
-      const dy = Math.max(-1, Math.min(1, (touch.clientY - cy) / (rect.height / 2)));
-      applyTilt(-dy * MAX_TILT * .6, dx * MAX_TILT * .6, { x: dx * GLOSS_STRENGTH, y: dy * GLOSS_STRENGTH });
+      const nx = Math.max(0, Math.min(1, (touch.clientX - rect.left)  / rect.width));
+      const ny = Math.max(0, Math.min(1, (touch.clientY - rect.top)   / rect.height));
+      const dx = nx * 2 - 1;
+      const dy = ny * 2 - 1;
+      targetRy =  dx * MAX_TILT * 0.55;
+      targetRx = -dy * MAX_TILT * 0.55;
+      targetMx = nx * 100;
+      targetMy = ny * 100;
+      if(!isHovering){ isHovering = true; card.classList.add('card-active'); startLoop(); }
     }, { passive: true });
-    card.addEventListener('touchend', resetTilt);
+
+    card.addEventListener('touchend', () => {
+      isHovering = false;
+      targetRx = 0; targetRy = 0;
+      targetMx = 28; targetMy = 22;
+      card.classList.remove('card-active');
+      startLoop();
+    });
+
+    // Initialise CSS properties so the ::before gradient has values from the start
+    card.style.setProperty('--mx', '28');
+    card.style.setProperty('--my', '22');
   })();
 
   // ---- Typewriter console ----
