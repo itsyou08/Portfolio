@@ -318,11 +318,25 @@
   .gwa-num{font-family:'JetBrains Mono',monospace;font-size:24px;font-weight:700;color:hsl(var(--primary));}
   .gwa-label{font-size:10.5px;color:hsl(var(--muted-foreground));text-transform:uppercase;letter-spacing:.04em;margin-top:2px;}
 
-  /* Education card: inverted — black bg in light mode, white bg in dark mode */
-  .edu-row.card{background:hsl(var(--foreground));color:hsl(var(--background));border-color:hsl(var(--foreground));}
+  /* Education card: inverted glass panel — black-tinted glass in light mode, white-tinted glass in dark mode */
+  .edu-row.card{
+    position:relative;
+    background:linear-gradient(150deg, hsl(var(--foreground) / .97) 0%, hsl(var(--foreground) / .94) 45%, hsl(var(--foreground) / .86) 72%, hsl(var(--muted-foreground) / .55) 100%);
+    color:hsl(var(--background));
+    border:1px solid hsl(var(--background) / .16);
+    backdrop-filter:blur(10px) saturate(110%);
+    -webkit-backdrop-filter:blur(10px) saturate(110%);
+    box-shadow:0 8px 32px hsl(var(--foreground) / .22), inset 0 1px 0 hsl(var(--background) / .06);
+    overflow:hidden;
+  }
+  .edu-row.card::before{
+    content:'';position:absolute;inset:0;pointer-events:none;
+    background:linear-gradient(135deg, hsl(var(--background) / .06), transparent 60%);
+  }
+  .edu-row.card > *{position:relative;z-index:1;}
   .edu-row .tl-org{color:hsl(var(--background) / .65);}
-  .edu-row .pill-row .badge{background:hsl(var(--background) / .12);color:hsl(var(--background));border-color:hsl(var(--background) / .28);}
-  .edu-row .gwa-badge.card{background:transparent;border-color:hsl(var(--background) / .3) !important;}
+  .edu-row .pill-row .badge{background:hsl(var(--background) / .12);color:hsl(var(--background));border-color:hsl(var(--background) / .28);backdrop-filter:blur(6px);}
+  .edu-row .gwa-badge.card{background:hsl(var(--background) / .08);border:1px dashed hsl(var(--background) / .32) !important;backdrop-filter:none;box-shadow:none;}
   .edu-row .gwa-num{color:hsl(var(--background));}
   .edu-row .gwa-label{color:hsl(var(--background) / .6);}
   .cert-list{display:flex;flex-direction:column;gap:10px;margin-top:20px;}
@@ -360,6 +374,19 @@
     html{scroll-behavior:auto;}
     *{animation-duration:.001s !important;transition-duration:.001s !important;}
     .reveal{opacity:1 !important;transform:none !important;}
+  }
+
+  /* ---------- Circular theme-toggle transition ---------- */
+  ::view-transition-old(root),
+  ::view-transition-new(root){
+    animation:none;
+    mix-blend-mode:normal;
+  }
+  ::view-transition-old(root){
+    z-index:1;
+  }
+  ::view-transition-new(root){
+    z-index:2147483646;
   }
 </style>
 </head>
@@ -740,7 +767,44 @@
   }
   const prefersDark = window.matchMedia && window.matchMedia('(prefers-color-scheme: dark)').matches;
   setTheme(prefersDark);
-  themeBtn.addEventListener('click', () => setTheme(!root.classList.contains('dark')));
+
+  function toggleThemeAt(x, y){
+    const goingDark = !root.classList.contains('dark');
+
+    // Fallback for browsers without the View Transitions API
+    if(!document.startViewTransition || (window.matchMedia && window.matchMedia('(prefers-reduced-motion: reduce)').matches)){
+      setTheme(goingDark);
+      return;
+    }
+
+    const transition = document.startViewTransition(() => setTheme(goingDark));
+    transition.ready.then(() => {
+      const endRadius = Math.hypot(
+        Math.max(x, window.innerWidth - x),
+        Math.max(y, window.innerHeight - y)
+      );
+      root.animate(
+        {
+          clipPath: [
+            `circle(0px at ${x}px ${y}px)`,
+            `circle(${endRadius}px at ${x}px ${y}px)`
+          ]
+        },
+        {
+          duration: 650,
+          easing: 'cubic-bezier(.65,0,.35,1)',
+          pseudoElement: '::view-transition-new(root)'
+        }
+      );
+    });
+  }
+
+  themeBtn.addEventListener('click', (e) => {
+    const rect = themeBtn.getBoundingClientRect();
+    const x = rect.left + rect.width / 2;
+    const y = rect.top + rect.height / 2;
+    toggleThemeAt(x, y);
+  });
 
   // ---- Mobile menu ----
   const menuToggle = document.getElementById('menuToggle');
