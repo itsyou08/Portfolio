@@ -11,37 +11,37 @@
 <style>
   :root{
     --background: 0 0% 100%;
-    --foreground: 240 10% 3.9%;
+    --foreground: 0 0% 4%;
     --card: 0 0% 100%;
-    --card-foreground: 240 10% 3.9%;
-    --border: 240 5.9% 90%;
-    --input: 240 5.9% 90%;
-    --muted: 240 4.8% 95.9%;
-    --muted-foreground: 240 3.8% 46.1%;
-    --primary: 243 75% 59%;
+    --card-foreground: 0 0% 4%;
+    --border: 0 0% 88%;
+    --input: 0 0% 88%;
+    --muted: 0 0% 96%;
+    --muted-foreground: 0 0% 40%;
+    --primary: 0 0% 9%;
     --primary-foreground: 0 0% 100%;
-    --accent: 240 4.8% 95.9%;
-    --accent-foreground: 240 5.9% 10%;
-    --ring: 243 75% 59%;
+    --accent: 0 0% 95%;
+    --accent-foreground: 0 0% 9%;
+    --ring: 0 0% 9%;
     --radius: 0.625rem;
-    --success: 158 64% 40%;
+    --success: 0 0% 15%;
     color-scheme: light;
   }
   html.dark{
-    --background: 240 10% 4.5%;
+    --background: 0 0% 5%;
     --foreground: 0 0% 96%;
-    --card: 240 8% 7%;
+    --card: 0 0% 8%;
     --card-foreground: 0 0% 96%;
-    --border: 240 5% 15%;
-    --input: 240 5% 15%;
-    --muted: 240 5% 11%;
-    --muted-foreground: 240 5% 62%;
-    --primary: 243 82% 68%;
-    --primary-foreground: 240 10% 4%;
-    --accent: 240 5% 12%;
+    --border: 0 0% 18%;
+    --input: 0 0% 18%;
+    --muted: 0 0% 12%;
+    --muted-foreground: 0 0% 62%;
+    --primary: 0 0% 96%;
+    --primary-foreground: 0 0% 6%;
+    --accent: 0 0% 14%;
     --accent-foreground: 0 0% 96%;
-    --ring: 243 82% 68%;
-    --success: 158 64% 48%;
+    --ring: 0 0% 96%;
+    --success: 0 0% 88%;
     color-scheme: dark;
   }
 
@@ -77,7 +77,7 @@
   .brand-logo img{width:100%;height:100%;object-fit:cover;border-radius:9px;display:block;}
   .brand-fallback{
     position:absolute;inset:0;display:none;align-items:center;justify-content:center;border-radius:9px;
-    background:linear-gradient(135deg, hsl(var(--primary)), hsl(275 70% 58%));
+    background:linear-gradient(135deg, hsl(var(--primary)), hsl(0 0% 30%));
     color:#fff;font-family:'JetBrains Mono',monospace;font-weight:700;font-size:13px;
   }
   .navlinks{display:flex;align-items:center;gap:2px;}
@@ -138,6 +138,15 @@
   h2.section-title{font-size:26px;font-weight:700;letter-spacing:-.02em;margin-bottom:8px;}
   .section-sub{color:hsl(var(--muted-foreground));font-size:14.5px;max-width:56ch;margin-bottom:44px;}
 
+  /* ---------- Scroll reveal ---------- */
+  .reveal{
+    opacity:0;
+    transform:translateY(28px);
+    transition:opacity .9s cubic-bezier(.16,1,.3,1), transform .9s cubic-bezier(.16,1,.3,1);
+    will-change:opacity, transform;
+  }
+  .reveal.in-view{opacity:1;transform:translateY(0);}
+
   /* ---------- Hero ---------- */
   #hero{padding-top:64px;padding-bottom:80px;}
   .hero-grid{display:grid;grid-template-columns:1.05fr .95fr;gap:48px;align-items:start;padding-top:36px;}
@@ -164,10 +173,15 @@
     display:flex;align-items:center;gap:6px;padding:10px 14px;
     border-bottom:1px solid hsl(var(--border));background:hsl(var(--muted));
   }
-  .console-bar .dot{width:11px;height:11px;border-radius:50%;display:inline-block;transform:none;box-shadow:inset 0 0 0 1px rgb(0 0 0 / .12);}
+  .console-bar .dot{
+    width:11px;height:11px;border-radius:50%;display:inline-flex;align-items:center;justify-content:center;
+    box-shadow:inset 0 0 0 1px hsl(0 0% 0% / .12);cursor:pointer;position:relative;
+  }
   .console-bar .dot:nth-of-type(1){background:#ff5f57;}
   .console-bar .dot:nth-of-type(2){background:#febc2e;}
   .console-bar .dot:nth-of-type(3){background:#28c840;}
+  .console-bar .dot svg{width:6.5px;height:6.5px;opacity:0;transition:opacity .15s ease;display:block;}
+  .console-bar .dot:hover svg{opacity:1;}
   .console-title{margin-left:6px;font-family:'JetBrains Mono',monospace;font-size:11.5px;color:hsl(var(--muted-foreground));}
   .console-copy{
     margin-left:auto;display:flex;align-items:center;gap:5px;background:transparent;border:none;cursor:pointer;
@@ -180,11 +194,11 @@
     color:hsl(var(--muted-foreground) / .45);user-select:none;text-align:right;min-width:20px;
   }
   .console-body{padding:18px 18px 18px 12px;font-family:'JetBrains Mono',monospace;font-size:12.6px;line-height:1.9;flex:1;min-width:0;}
-  .console-body .c-kw{color:hsl(280 65% 60%);}
-  .console-body .c-str{color:hsl(var(--success));}
+  .console-body .c-kw{color:hsl(280 65% 60%);font-weight:600;}
+  .console-body .c-str{color:hsl(158 64% 40%);}
   .console-body .c-com{color:hsl(var(--muted-foreground));}
   .console-body .c-fn{color:hsl(243 75% 62%);}
-  .caret{display:inline-block;width:6px;height:13px;background:hsl(var(--primary));vertical-align:middle;animation:blink 1s step-end infinite;}
+  .caret{display:inline-block;width:6px;height:13px;background:hsl(243 75% 59%);vertical-align:middle;animation:blink 1s step-end infinite;}
   @keyframes blink{50%{opacity:0;}}
 
   .result-wrap{max-height:0;opacity:0;overflow:hidden;transition:max-height .5s ease, opacity .4s ease;}
@@ -200,12 +214,12 @@
     padding:9px 16px;border-top:1px solid hsl(var(--border));background:hsl(var(--muted));
     font-family:'JetBrains Mono',monospace;font-size:10.8px;color:hsl(var(--muted-foreground));
   }
-  .console-footer .ok{display:flex;align-items:center;gap:6px;color:hsl(var(--success));font-weight:600;}
-  .console-footer .ok::before{content:'';width:6px;height:6px;border-radius:50%;background:hsl(var(--success));box-shadow:0 0 0 3px hsl(var(--success)/.18);}
+  .console-footer .ok{display:flex;align-items:center;gap:6px;color:hsl(158 64% 40%);font-weight:600;}
+  .console-footer .ok::before{content:'';width:6px;height:6px;border-radius:50%;background:hsl(158 64% 40%);box-shadow:0 0 0 3px hsl(158 64% 40%/.18);}
 
   /* ---------- Experience ---------- */
   .exp-list-wrap{display:flex;flex-direction:column;gap:16px;}
-  .exp-card{padding:0;overflow:hidden;transition:.2s ease;}
+  .exp-card{padding:0;overflow:hidden;transition:border-color .2s ease, box-shadow .2s ease, transform .2s ease, opacity .9s cubic-bezier(.16,1,.3,1);}
   .exp-card:hover{border-color:hsl(var(--primary) / .35);box-shadow:0 10px 28px -16px hsl(var(--foreground) / .14);}
   .exp-head{display:flex;gap:14px;padding:20px 22px;border-bottom:1px solid hsl(var(--border));}
   .exp-logo{
@@ -237,7 +251,7 @@
 
   /* ---------- Projects ---------- */
   .proj-grid{display:grid;grid-template-columns:repeat(2,minmax(0,1fr));gap:18px;}
-  .proj-card{display:flex;flex-direction:column;height:100%;min-width:0;}
+  .proj-card{display:flex;flex-direction:column;height:100%;min-width:0;transition:border-color .2s ease, box-shadow .2s ease, transform .2s ease, opacity .9s cubic-bezier(.16,1,.3,1);}
   .proj-top{display:flex;justify-content:space-between;align-items:flex-start;margin-bottom:12px;}
   .proj-icon{width:34px;height:34px;border-radius:8px;background:hsl(var(--primary) / .12);color:hsl(var(--primary));display:flex;align-items:center;justify-content:center;font-family:'JetBrains Mono',monospace;font-weight:700;font-size:13px;}
   .proj-title{font-size:15px;font-weight:700;margin-bottom:6px;letter-spacing:-.01em;}
@@ -256,15 +270,15 @@
   .proj-thumb-sm:hover img{transform:scale(1.08);}
   .proj-thumb-eye{
     position:absolute;inset:0;display:flex;align-items:center;justify-content:center;
-    background:hsl(240 10% 4% / 0);opacity:0;transition:.18s ease;color:#fff;
+    background:hsl(0 0% 0% / 0);opacity:0;transition:.18s ease;color:#fff;
   }
-  .proj-thumb-sm:hover .proj-thumb-eye{opacity:1;background:hsl(240 10% 4% / .42);}
+  .proj-thumb-sm:hover .proj-thumb-eye{opacity:1;background:hsl(0 0% 0% / .42);}
 
   /* ---------- Image modal ---------- */
   .modal-overlay{
     position:fixed;inset:0;z-index:100;padding:32px;
     display:flex;align-items:center;justify-content:center;
-    background:hsl(240 10% 4% / .78);backdrop-filter:blur(4px);
+    background:hsl(0 0% 0% / .78);backdrop-filter:blur(4px);
     opacity:0;visibility:hidden;transition:opacity .2s ease, visibility .2s ease;
   }
   .modal-overlay.show{opacity:1;visibility:visible;}
@@ -283,15 +297,17 @@
     position:absolute;top:12px;right:12px;z-index:2;width:32px;height:32px;border-radius:8px;
     display:flex;align-items:center;justify-content:center;cursor:pointer;
     background:hsl(var(--card) / .92);border:1px solid hsl(var(--border));color:hsl(var(--foreground));
-    transition:.15s ease;
+    transition:.15s ease;padding:0;line-height:0;
   }
+  .modal-close svg{display:block;}
   .modal-close:hover{background:hsl(var(--accent));}
   .modal-nav{
     position:absolute;top:calc(50% - 25px);z-index:2;width:36px;height:36px;border-radius:50%;
     display:flex;align-items:center;justify-content:center;cursor:pointer;
     background:hsl(var(--card) / .92);border:1px solid hsl(var(--border));color:hsl(var(--foreground));
-    transition:.15s ease;
+    transition:.15s ease;padding:0;line-height:0;
   }
+  .modal-nav svg{display:block;}
   .modal-nav:hover{background:hsl(var(--accent));}
   .modal-prev{left:12px;}
   .modal-next{right:12px;}
@@ -301,13 +317,21 @@
   .gwa-badge{text-align:center;padding:14px 20px;}
   .gwa-num{font-family:'JetBrains Mono',monospace;font-size:24px;font-weight:700;color:hsl(var(--primary));}
   .gwa-label{font-size:10.5px;color:hsl(var(--muted-foreground));text-transform:uppercase;letter-spacing:.04em;margin-top:2px;}
+
+  /* Education card: inverted — black bg in light mode, white bg in dark mode */
+  .edu-row.card{background:hsl(var(--foreground));color:hsl(var(--background));border-color:hsl(var(--foreground));}
+  .edu-row .tl-org{color:hsl(var(--background) / .65);}
+  .edu-row .pill-row .badge{background:hsl(var(--background) / .12);color:hsl(var(--background));border-color:hsl(var(--background) / .28);}
+  .edu-row .gwa-badge.card{background:transparent;border-color:hsl(var(--background) / .3) !important;}
+  .edu-row .gwa-num{color:hsl(var(--background));}
+  .edu-row .gwa-label{color:hsl(var(--background) / .6);}
   .cert-list{display:flex;flex-direction:column;gap:10px;margin-top:20px;}
-  .cert-item{display:flex;align-items:center;gap:12px;padding:12px 14px;border:1px solid hsl(var(--border));border-radius:calc(var(--radius) - 2px);font-size:13.3px;}
+  .cert-item{display:flex;align-items:center;gap:12px;padding:12px 14px;border:1px solid hsl(var(--border));border-radius:calc(var(--radius) - 2px);font-size:13.3px;transition:opacity .9s cubic-bezier(.16,1,.3,1), transform .9s cubic-bezier(.16,1,.3,1);}
   .cert-item .cert-org{font-family:'JetBrains Mono',monospace;font-size:11px;color:hsl(var(--primary));min-width:64px;font-weight:600;}
 
   /* ---------- Contact / Footer ---------- */
   #contact{text-align:center;}
-  .contact-card{max-width:560px;margin:0 auto;padding:48px 32px;}
+  .contact-card{max-width:560px;margin:0 auto;padding:48px 32px;border:none;background:transparent;}
   .contact-links{display:flex;justify-content:center;gap:10px;margin-top:26px;flex-wrap:wrap;}
   footer{padding:28px 0;text-align:center;font-size:12.5px;color:hsl(var(--muted-foreground));}
   footer .mono{opacity:.7;}
@@ -335,6 +359,7 @@
   @media (prefers-reduced-motion: reduce){
     html{scroll-behavior:auto;}
     *{animation-duration:.001s !important;transition-duration:.001s !important;}
+    .reveal{opacity:1 !important;transform:none !important;}
   }
 </style>
 </head>
@@ -393,7 +418,9 @@
         <div>
           <div class="console">
             <div class="console-bar">
-              <span class="dot"></span><span class="dot"></span><span class="dot"></span>
+              <span class="dot" title="Close"><svg viewBox="0 0 10 10" fill="none" stroke="currentColor" stroke-width="1.4" stroke-linecap="round"><path d="M2.2 2.2l5.6 5.6M7.8 2.2l-5.6 5.6"/></svg></span>
+              <span class="dot" title="Minimize"><svg viewBox="0 0 10 10" fill="none" stroke="currentColor" stroke-width="1.4" stroke-linecap="round"><path d="M2 5h6"/></svg></span>
+              <span class="dot" title="Maximize"><svg viewBox="0 0 10 10" fill="none" stroke="currentColor" stroke-width="1.3" stroke-linecap="round" stroke-linejoin="round"><path d="M2.1 6.4V7.9h1.5M7.9 3.6V2.1H6.4M3 7l1.9-1.9M7 3l-1.9 1.9"/></svg></span>
               <span class="console-title">profile.sql</span>
               <button class="console-copy" id="copyBtn" title="Copy query">
                 <svg width="12" height="12" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><rect x="9" y="9" width="13" height="13" rx="2"/><path d="M5 15H4a2 2 0 0 1-2-2V4a2 2 0 0 1 2-2h9a2 2 0 0 1 2 2v1"/></svg>
@@ -428,12 +455,12 @@
   <!-- EXPERIENCE -->
   <section id="experience">
     <div class="wrap">
-      <div class="eyebrow">01 · WORK HISTORY</div>
-      <h2 class="section-title">Experience</h2>
-      <p class="section-sub">From hospital record systems to global order operations — building reliability into data, one validation rule at a time.</p>
+      <div class="eyebrow reveal">01 · WORK HISTORY</div>
+      <h2 class="section-title reveal">Experience</h2>
+      <p class="section-sub reveal">From hospital record systems to global order operations — building reliability into data, one validation rule at a time.</p>
 
       <div class="exp-list-wrap">
-        <div class="card exp-card">
+        <div class="card exp-card reveal">
           <div class="exp-head">
             <div class="exp-logo">
               <img src="KMC-logo.png" alt="KMC Solutions logo"
@@ -466,7 +493,7 @@
           </div>
         </div>
 
-        <div class="card exp-card">
+        <div class="card exp-card reveal">
           <div class="exp-head">
             <div class="exp-logo">
               <img src="https://commons.wikimedia.org/wiki/Special:FilePath/DOH%20Logo.png" alt="Department of Health Philippines logo"
@@ -504,12 +531,12 @@
   <!-- SKILLS -->
   <section id="skills">
     <div class="wrap">
-      <div class="eyebrow">02 · CAPABILITIES</div>
-      <h2 class="section-title">Skills</h2>
-      <p class="section-sub">Grouped the way I use them — data operations, system fluency, support, and the process discipline that holds it together.</p>
+      <div class="eyebrow reveal">02 · CAPABILITIES</div>
+      <h2 class="section-title reveal">Skills</h2>
+      <p class="section-sub reveal">Grouped the way I use them — data operations, system fluency, support, and the process discipline that holds it together.</p>
 
       <div class="skill-grid">
-        <div class="card skill-card">
+        <div class="card skill-card reveal">
           <h3><span class="idx">§1</span>Reporting &amp; Data Operations</h3>
           <div class="pill-row">
             <span class="badge">Excel · Pivot Tables</span>
@@ -523,7 +550,7 @@
             <span class="badge">Root-Cause Analysis</span>
           </div>
         </div>
-        <div class="card skill-card">
+        <div class="card skill-card reveal">
           <h3><span class="idx">§2</span>Systems &amp; Technical</h3>
           <div class="pill-row">
             <span class="badge">SQL / MySQL</span>
@@ -535,7 +562,7 @@
             <span class="badge">Chart.js</span>
           </div>
         </div>
-        <div class="card skill-card">
+        <div class="card skill-card reveal">
           <h3><span class="idx">§3</span>System Support &amp; Docs</h3>
           <div class="pill-row">
             <span class="badge">Troubleshooting</span>
@@ -545,7 +572,7 @@
             <span class="badge">Application Updates</span>
           </div>
         </div>
-        <div class="card skill-card">
+        <div class="card skill-card reveal">
           <h3><span class="idx">§4</span>Professional &amp; Functional</h3>
           <div class="pill-row">
             <span class="badge">Process Optimization</span>
@@ -562,12 +589,12 @@
   <!-- PROJECTS -->
   <section id="projects">
     <div class="wrap">
-      <div class="eyebrow">03 · SELECTED WORK</div>
-      <h2 class="section-title">Projects</h2>
-      <p class="section-sub">Four systems, one thread: take unreliable or scattered records and give them structure people can trust.</p>
+      <div class="eyebrow reveal">03 · SELECTED WORK</div>
+      <h2 class="section-title reveal">Projects</h2>
+      <p class="section-sub reveal">Four systems, one thread: take unreliable or scattered records and give them structure people can trust.</p>
 
       <div class="proj-grid">
-        <div class="card card-hover proj-card">
+        <div class="card card-hover proj-card reveal">
           <div class="proj-top">
             <div class="proj-icon">01</div>
             <span class="badge badge-primary">Work</span>
@@ -582,7 +609,7 @@
           <div class="proj-gallery" data-project="ordertracker"></div>
         </div>
 
-        <div class="card card-hover proj-card">
+        <div class="card card-hover proj-card reveal">
           <div class="proj-top">
             <div class="proj-icon">02</div>
             <span class="badge badge-primary">DOH</span>
@@ -596,7 +623,7 @@
           <div class="proj-gallery" data-project="recordfiles"></div>
         </div>
 
-        <div class="card card-hover proj-card">
+        <div class="card card-hover proj-card reveal">
           <div class="proj-top">
             <div class="proj-icon">03</div>
             <span class="badge badge-primary">Thesis</span>
@@ -610,7 +637,7 @@
           <div class="proj-gallery" data-project="albay"></div>
         </div>
 
-        <div class="card card-hover proj-card">
+        <div class="card card-hover proj-card reveal">
           <div class="proj-top">
             <div class="proj-icon">04</div>
             <span class="badge badge-primary">Client</span>
@@ -630,10 +657,10 @@
   <!-- EDUCATION -->
   <section id="education">
     <div class="wrap">
-      <div class="eyebrow">04 · EDUCATION &amp; CERTIFICATIONS</div>
-      <h2 class="section-title">Education</h2>
+      <div class="eyebrow reveal">04 · EDUCATION &amp; CERTIFICATIONS</div>
+      <h2 class="section-title reveal">Education</h2>
 
-      <div class="card edu-row">
+      <div class="card edu-row reveal">
         <div>
           <div class="tl-role" style="margin-bottom:4px;">BS in Information Systems</div>
           <div class="tl-org" style="margin-bottom:14px;">Bicol University Polangui · 2021 – 2025</div>
@@ -650,9 +677,9 @@
       </div>
 
       <div class="cert-list">
-        <div class="cert-item"><span class="cert-org">TESDA</span>Practical Application of AI for Daily Use</div>
-        <div class="cert-item"><span class="cert-org">DICT</span>AI Essentials: Unlocking the Power of Artificial Intelligence</div>
-        <div class="cert-item"><span class="cert-org">DICT</span>Cyber Resilience: Data Leaks Awareness</div>
+        <div class="cert-item reveal"><span class="cert-org">TESDA</span>Practical Application of AI for Daily Use</div>
+        <div class="cert-item reveal"><span class="cert-org">DICT</span>AI Essentials: Unlocking the Power of Artificial Intelligence</div>
+        <div class="cert-item reveal"><span class="cert-org">DICT</span>Cyber Resilience: Data Leaks Awareness</div>
       </div>
     </div>
   </section>
@@ -660,7 +687,7 @@
   <!-- CONTACT -->
   <section id="contact">
     <div class="wrap">
-      <div class="card contact-card">
+      <div class="contact-card">
         <div class="eyebrow" style="justify-content:center;">05 · GET IN TOUCH</div>
         <h2 class="section-title">Let's work together</h2>
         <p class="section-sub" style="margin:0 auto;">Open to Data / MDM Associate roles across Metro Manila. I usually reply within a day.</p>
@@ -741,11 +768,47 @@
   }, { threshold: 0 });
   heroIo.observe(hero);
 
-  // ---- Typewriter console ----
-  const queryLines = [
-    '<span class="c-kw">SELECT</span> <span class="c-col">name</span>, <span class="c-col">role</span>, <span class="c-col">based_in</span>, <span class="c-col">focus</span>, <span class="c-col">degree</span>',
-    '<span class="c-kw">FROM</span> <span class="c-fn">professionals</span>',
-    '<span class="c-kw">WHERE</span> id = <span class="c-str">\'ken_joshua\'</span>;',
+  // ---- Scroll reveal animations (Apple-style fade + rise, staggered within groups) ----
+  (function initReveal(){
+    const staggerGroups = [
+      '.exp-list-wrap .exp-card',
+      '.skill-grid .skill-card',
+      '.proj-grid .proj-card',
+      '.cert-list .cert-item'
+    ];
+    staggerGroups.forEach(sel => {
+      document.querySelectorAll(sel).forEach((el, i) => {
+        el.style.transitionDelay = (i * 0.09) + 's';
+      });
+    });
+
+    const revealEls = document.querySelectorAll('.reveal');
+    const revealIo = new IntersectionObserver((entries) => {
+      entries.forEach(entry => {
+        if(entry.isIntersecting){
+          entry.target.classList.add('in-view');
+          revealIo.unobserve(entry.target);
+        }
+      });
+    }, { threshold: 0.15, rootMargin: '0px 0px -80px 0px' });
+
+    revealEls.forEach(el => revealIo.observe(el));
+  })();
+
+  // ---- Typewriter console (real character-by-character typing) ----
+  const queryLinesData = [
+    {
+      text: "SELECT name, role, based_in, focus, degree",
+      html: '<span class="c-kw">SELECT</span> <span class="c-col">name</span>, <span class="c-col">role</span>, <span class="c-col">based_in</span>, <span class="c-col">focus</span>, <span class="c-col">degree</span>'
+    },
+    {
+      text: "FROM professionals",
+      html: '<span class="c-kw">FROM</span> <span class="c-fn">professionals</span>'
+    },
+    {
+      text: "WHERE id = 'ken_joshua';",
+      html: '<span class="c-kw">WHERE</span> id = <span class="c-str">\'ken_joshua\'</span>;'
+    },
   ];
   const queryPlainText = "SELECT name, role, based_in, focus, degree\nFROM professionals\nWHERE id = 'ken_joshua';";
 
@@ -753,31 +816,57 @@
   const lineNums = document.getElementById('consoleLines');
   const resultWrap = document.getElementById('resultWrap');
   const footerMeta = document.getElementById('footerMeta');
-  let qi = 0;
 
-  function typeQueryLine(){
-    if(qi >= queryLines.length){
-      const c = document.createElement('span');
-      c.className = 'caret';
-      body.appendChild(c);
-      setTimeout(() => {
-        c.remove();
-        resultWrap.classList.add('show');
-        footerMeta.textContent = '5 rows · 12 ms';
-      }, 450);
+  let li = 0;
+
+  function finishTyping(){
+    const c = document.createElement('span');
+    c.className = 'caret';
+    body.appendChild(c);
+    setTimeout(() => {
+      c.remove();
+      resultWrap.classList.add('show');
+      footerMeta.textContent = '5 rows · 12 ms';
+    }, 450);
+  }
+
+  function typeLine(){
+    if(li >= queryLinesData.length){
+      finishTyping();
       return;
     }
+
     const numDiv = document.createElement('div');
-    numDiv.textContent = qi + 1;
+    numDiv.textContent = li + 1;
     lineNums.appendChild(numDiv);
 
-    const div = document.createElement('div');
-    div.innerHTML = queryLines[qi];
-    body.appendChild(div);
-    qi++;
-    setTimeout(typeQueryLine, 260);
+    const lineDiv = document.createElement('div');
+    const textSpan = document.createElement('span');
+    const caret = document.createElement('span');
+    caret.className = 'caret';
+    lineDiv.appendChild(textSpan);
+    lineDiv.appendChild(caret);
+    body.appendChild(lineDiv);
+
+    const fullText = queryLinesData[li].text;
+    let ci = 0;
+
+    function typeChar(){
+      if(ci <= fullText.length){
+        textSpan.textContent = fullText.slice(0, ci);
+        ci++;
+        // slight human-like jitter in typing speed
+        setTimeout(typeChar, 16 + Math.random() * 26);
+      } else {
+        // swap plain text for syntax-highlighted markup once the line is complete
+        lineDiv.innerHTML = queryLinesData[li].html;
+        li++;
+        setTimeout(typeLine, 220);
+      }
+    }
+    typeChar();
   }
-  setTimeout(typeQueryLine, 400);
+  setTimeout(typeLine, 500);
 
   // ---- Copy query button ----
   const copyBtn = document.getElementById('copyBtn');
@@ -799,37 +888,37 @@
     ordertracker: {
       title: 'Order Tracking System',
       images: [
-        'https://placehold.co/1200x750/6d5ef5/ffffff?text=Dashboard+View&font=jetbrains-mono',
-        'https://placehold.co/1200x750/5b4fe0/ffffff?text=Order+Detail&font=jetbrains-mono',
-        'https://placehold.co/1200x750/4a3fc7/ffffff?text=Supplier+Tags&font=jetbrains-mono',
-        'https://placehold.co/1200x750/6d5ef5/ffffff?text=XLSX+Export&font=jetbrains-mono',
+        'https://placehold.co/1200x750/1a1a1a/ffffff?text=Dashboard+View&font=jetbrains-mono',
+        'https://placehold.co/1200x750/2a2a2a/ffffff?text=Order+Detail&font=jetbrains-mono',
+        'https://placehold.co/1200x750/3a3a3a/ffffff?text=Supplier+Tags&font=jetbrains-mono',
+        'https://placehold.co/1200x750/1a1a1a/ffffff?text=XLSX+Export&font=jetbrains-mono',
       ],
     },
     recordfiles: {
       title: 'Record Files Management System',
       images: [
-        'https://placehold.co/1200x750/10b981/ffffff?text=Shelf+Navigator&font=jetbrains-mono',
-        'https://placehold.co/1200x750/0d9c6e/ffffff?text=Record+Search&font=jetbrains-mono',
-        'https://placehold.co/1200x750/0a8a5f/ffffff?text=Audit+Log&font=jetbrains-mono',
+        'https://placehold.co/1200x750/222222/ffffff?text=Shelf+Navigator&font=jetbrains-mono',
+        'https://placehold.co/1200x750/333333/ffffff?text=Record+Search&font=jetbrains-mono',
+        'https://placehold.co/1200x750/444444/ffffff?text=Audit+Log&font=jetbrains-mono',
       ],
     },
     albay: {
       title: 'Albay Dialect Dictionary',
       images: [
-        'https://placehold.co/1200x750/f59e0b/ffffff?text=Dictionary+Home&font=jetbrains-mono',
-        'https://placehold.co/1200x750/e08c00/ffffff?text=Word+Entry&font=jetbrains-mono',
-        'https://placehold.co/1200x750/cc7d00/ffffff?text=Category+Browser&font=jetbrains-mono',
-        'https://placehold.co/1200x750/f59e0b/ffffff?text=Schema+ERD&font=jetbrains-mono',
-        'https://placehold.co/1200x750/e08c00/ffffff?text=Admin+Panel&font=jetbrains-mono',
-        'https://placehold.co/1200x750/cc7d00/ffffff?text=Search+Results&font=jetbrains-mono',
+        'https://placehold.co/1200x750/242424/ffffff?text=Dictionary+Home&font=jetbrains-mono',
+        'https://placehold.co/1200x750/303030/ffffff?text=Word+Entry&font=jetbrains-mono',
+        'https://placehold.co/1200x750/3c3c3c/ffffff?text=Category+Browser&font=jetbrains-mono',
+        'https://placehold.co/1200x750/242424/ffffff?text=Schema+ERD&font=jetbrains-mono',
+        'https://placehold.co/1200x750/303030/ffffff?text=Admin+Panel&font=jetbrains-mono',
+        'https://placehold.co/1200x750/3c3c3c/ffffff?text=Search+Results&font=jetbrains-mono',
       ],
     },
     cookie: {
       title: 'Cookie Ordering System',
       images: [
-        'https://placehold.co/1200x750/ec4899/ffffff?text=Storefront&font=jetbrains-mono',
-        'https://placehold.co/1200x750/d63384/ffffff?text=Chart.js+Dashboard&font=jetbrains-mono',
-        'https://placehold.co/1200x750/c2185b/ffffff?text=Order+Summary&font=jetbrains-mono',
+        'https://placehold.co/1200x750/1e1e1e/ffffff?text=Storefront&font=jetbrains-mono',
+        'https://placehold.co/1200x750/2c2c2c/ffffff?text=Chart.js+Dashboard&font=jetbrains-mono',
+        'https://placehold.co/1200x750/3a3a3a/ffffff?text=Order+Summary&font=jetbrains-mono',
       ],
     },
   };
